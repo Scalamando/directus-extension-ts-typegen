@@ -123,7 +123,7 @@ function compileStructuredType(field: StructuredField): string {
       return (
         "Array<{ " +
         field.fields
-          .map(({ name, type }) => `${name}: ${compilePrimitiveType({ type } as PrimitiveField)};`)
+          .map(({ name, type }) => `${quoteSpecial(name)}: ${compilePrimitiveType({ type } as PrimitiveField)};`)
           .join(" ") +
         " }>"
       );
@@ -143,6 +143,14 @@ function compileStructuredType(field: StructuredField): string {
       );
     default:
       return "unknown";
+  }
+}
+
+function quoteSpecial(name: string) {
+  if (/[\$:]/.test(name)) {
+    return `"${name}"`;
+  } else {
+    return name;
   }
 }
 
