@@ -123,7 +123,10 @@ function compileStructuredType(field: StructuredField): string {
       return (
         "Array<{ " +
         field.fields
-          .map(({ name, type }) => `${quoteSpecial(name)}: ${compilePrimitiveType({ type } as PrimitiveField)};`)
+          .map(
+            ({ name, type }) =>
+              `${quoteSpecial(name)}: ${compilePrimitiveType({ type } as PrimitiveField)};`
+          )
           .join(" ") +
         " }>"
       );
@@ -155,6 +158,8 @@ function quoteSpecial(name: string) {
 }
 
 const GeoJSONTypes = `
+// GeoJSON Types
+
 export interface GeoJSONPoint {
   type: "Point";
   coordinates: [number, number];

@@ -4,10 +4,7 @@ import { useAsyncState } from "@vueuse/core";
 
 const api = useApi();
 
-const { state, isReady } = useAsyncState(
-  () => api.get("/ts-typegen/types"),
-  null,
-);
+const { state, isReady } = useAsyncState(() => api.get("/ts-typegen/types"), null);
 </script>
 
 <template>
