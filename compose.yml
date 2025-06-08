@@ -1,0 +1,26 @@
+services:
+  database:
+    image: postgis/postgis:13-master
+    restart: unless-stopped
+    env_file:
+      - .env.container
+    volumes:
+      - ./data/database:/var/lib/postgresql/data
+
+  cache:
+    image: redis:6
+    restart: unless-stopped
+
+  directus:
+    image: directus/directus:latest
+    restart: unless-stopped
+    env_file:
+      - .env.container
+    ports:
+      - 8055:8055
+    volumes:
+      - ./uploads:/directus/uploads
+      - ./:/directus/extensions/ts-typegen:ro
+    depends_on:
+      - cache
+      - database
