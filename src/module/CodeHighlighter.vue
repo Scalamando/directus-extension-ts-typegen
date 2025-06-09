@@ -9,6 +9,7 @@ import { computed, onBeforeUnmount } from "vue";
 
 const props = defineProps<{
   code: string;
+  loading?: boolean;
 }>();
 
 const highlighter = await createHighlighterCore({
@@ -53,6 +54,8 @@ const { copy, copied } = useClipboard({ source: formattedCode });
         <template v-if="copied">Copied!</template>
         <template v-else>Copy to clipboard</template>
       </v-button>
+
+      <v-progress-circular v-if="props.loading" indeterminate />
     </div>
     <div v-html="highlightedCode"></div>
   </div>
@@ -66,6 +69,9 @@ const { copy, copied } = useClipboard({ source: formattedCode });
 .toolbar {
   position: sticky;
   padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .copy-button {
