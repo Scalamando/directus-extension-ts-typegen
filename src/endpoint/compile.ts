@@ -20,10 +20,8 @@ export function compileTypes(schema: ResolvedSchema) {
   return typeString;
 }
 
-const compileCollectionType = (
-  collection: CollectionType,
-  schema: ResolvedSchema
-) => `export interface ${collection.typeName} {
+function compileCollectionType(collection: CollectionType, schema: ResolvedSchema) {
+  return `export interface ${collection.typeName} {
 ${Object.entries(collection.fields)
   .map(
     ([name, type]) =>
@@ -31,8 +29,9 @@ ${Object.entries(collection.fields)
   )
   .join("\n")}
 }`;
+}
 
-const compileFieldType = (field: FieldType, schema: ResolvedSchema): string => {
+function compileFieldType(field: FieldType, schema: ResolvedSchema): string {
   if (field.kind === "structured") {
     return `${compileStructuredType(field)}`;
   }
@@ -78,7 +77,7 @@ const compileFieldType = (field: FieldType, schema: ResolvedSchema): string => {
   } /* o2m */ else {
     return `${fieldType}[] | ${collectionTypeName}[]`;
   }
-};
+}
 
 function compilePrimitiveType(field: PrimitiveField): string {
   switch (field.type) {
