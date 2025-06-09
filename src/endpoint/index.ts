@@ -22,7 +22,7 @@ export default defineEndpoint({
         { collections, fields, relations },
         {
           typePrefix: req.query.typePrefix as string,
-          requiredNotNullable: Boolean(req.query.requiredNotNullable),
+          requiredNotNullable: req.query.requiredNotNullable === "true",
         }
       );
 
