@@ -191,7 +191,7 @@ export interface GeoJSONMultiPoint{
 }
 
 export interface GeoJSONMultiLineString {
-  type: "MultiPoint";
+  type: "MultiLineString";
   coordinates: Array<Array<[number, number]>>;
 }
 
@@ -200,7 +200,7 @@ export interface GeoJSONMultiPolygon {
   coordinates: Array<Array<Array<[number, number]>>>;
 }
 
-export interface GeoJsonGeometryCollection {
+export interface GeoJSONGeometryCollection {
   type: "GeometryCollection";
   geometries: Array<GeoJSONPoint | GeoJSONLineString | GeoJSONPolygon | GeoJSONMultiPoint | GeoJSONMultiLineString | GeoJSONMultiPolygon>;
 }`;
