@@ -67,7 +67,6 @@ export type M2AField = {
 export interface ResolveTypesOptions {
   requiredNotNullable?: boolean;
 }
-
 export function resolveTypes(schema: Schema, opts: ResolveTypesOptions) {
   let types: ResolvedSchema = {};
 
@@ -84,13 +83,13 @@ export function resolveTypes(schema: Schema, opts: ResolveTypesOptions) {
 
       if (field.relation == null) {
         if (field.type === "json" || field.type === "csv") {
-          types[collectionName].fields[fieldName] = resolveStructuredType(field);
+          types[collectionName].fields[fieldName] = resolveStructuredType(field, opts);
         } else {
-          types[collectionName].fields[fieldName] = resolvePrimitiveType(field);
+          types[collectionName].fields[fieldName] = resolvePrimitiveType(field, opts);
         }
       } else {
         // Relational
-        const relation = resolveRelation(field, collectionName, schema);
+        const relation = resolveRelation(field, collectionName, schema, opts);
         if (relation == null) continue;
 
         types[collectionName].fields[fieldName] = relation;
@@ -104,18 +103,25 @@ export function resolveTypes(schema: Schema, opts: ResolveTypesOptions) {
 interface ResolvePrimitiveTypeOptions {
   requiredNotNullable?: boolean;
 }
-function resolvePrimitiveType(field: Field, opts?: ResolvePrimitiveTypeOptions): PrimitiveField {
+function resolvePrimitiveType(
+  field: Field,
+  { requiredNotNullable }: ResolvePrimitiveTypeOptions = {}
+): PrimitiveField {
   return {
     kind: "primitive",
-    nullable: opts?.requiredNotNullable ? !field.required || !!field.nullable : !!field.nullable,
+    nullable: isNullable(field, requiredNotNullable),
     type: field.type,
   };
 }
 
+interface ResolveRelationOptions {
+  requiredNotNullable?: boolean;
+}
 function resolveRelation(
   field: Field,
   collection: string,
-  schema: Schema
+  schema: Schema,
+  { requiredNotNullable }: ResolveRelationOptions = {}
 ): M2OField | O2MField | M2AField | null {
   const relation = field.relation!;
 
@@ -135,7 +141,7 @@ function resolveRelation(
 
     return {
       kind: "m2o",
-      nullable: !field.required || !!field.nullable,
+      nullable: isNullable(field, requiredNotNullable),
       primitive: resolvePrimitiveType(field),
       relatedField: relation.oneKeyColumn,
       relatedCollection: relation.oneCollection,
@@ -158,7 +164,7 @@ function resolveRelation(
 
     return {
       kind: "o2m",
-      nullable: !field.required || !!field.nullable,
+      nullable: isNullable(field, requiredNotNullable),
       primitive: resolvePrimitiveType(field),
       relatedField: relation.manyField,
       relatedCollection: relation.manyCollection,
@@ -173,7 +179,7 @@ function resolveRelation(
   ) {
     return {
       kind: "m2a",
-      nullable: !field.required || !!field.nullable,
+      nullable: isNullable(field, requiredNotNullable),
       primitive: resolvePrimitiveType(field),
       relatedCollections: relation.oneAllowedCollections
         .map((c) => ({
@@ -198,19 +204,25 @@ function resolveRelation(
   return null;
 }
 
-function resolveStructuredType(field: Field): StructuredField {
+interface ResolveStructuredTypeOptions {
+  requiredNotNullable?: boolean;
+}
+function resolveStructuredType(
+  field: Field,
+  { requiredNotNullable }: ResolveStructuredTypeOptions= {}
+): StructuredField {
   switch (field.interface?.name) {
     case "list":
       return {
         kind: "structured",
-        nullable: !field.required || !!field.nullable,
+        nullable: isNullable(field, requiredNotNullable),
         type: "list",
         fields: field.interface.options.fields,
       };
     case "select-multiple-checkbox":
       return {
-        nullable: !field.required || !!field.nullable,
         kind: "structured",
+        nullable: isNullable(field, requiredNotNullable),
         type: "select-multiple-checkbox",
         choices: field.interface.options.choices,
       };
@@ -221,21 +233,21 @@ function resolveStructuredType(field: Field): StructuredField {
       ];
       return {
         kind: "structured",
-        nullable: !field.required || !!field.nullable,
+        nullable: isNullable(field, requiredNotNullable),
         type: "select-multiple-checkbox-tree",
         choices: field.interface.options.choices.flatMap(recurseChildren),
       };
     case "select-multiple-dropdown":
       return {
         kind: "structured",
-        nullable: !field.required || !!field.nullable,
+        nullable: isNullable(field, requiredNotNullable),
         type: "select-multiple-dropdown",
         choices: field.interface.options.choices,
       };
     case "tags":
       return {
         kind: "structured",
-        nullable: !field.required || !!field.nullable,
+        nullable: isNullable(field, requiredNotNullable),
         type: "tags",
         presets: field.interface.options.presets,
         allowCustom: field.interface.options.allowCustom,
@@ -243,7 +255,7 @@ function resolveStructuredType(field: Field): StructuredField {
     default:
       return {
         kind: "structured",
-        nullable: !field.required || !!field.nullable,
+        nullable: isNullable(field, requiredNotNullable),
         type: "unknown",
       };
   }
@@ -253,4 +265,8 @@ function isPresentational(field: Field) {
   return (
     field.interface?.name.startsWith("presentation") || field.interface?.name.startsWith("group")
   );
+}
+
+function isNullable(field: Field, requiredNotNullable: boolean = false) {
+  return requiredNotNullable ? !field.required || !!field.nullable : !!field.nullable;
 }
