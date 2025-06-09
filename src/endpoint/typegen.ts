@@ -10,11 +10,12 @@ export interface GenerateTypesInput {
 }
 export interface GenerateTypesOptions {
   typePrefix?: string;
+  requiredNotNullable?: boolean;
 }
 
 export function generateTypes(directusSchema: GenerateTypesInput, opts: GenerateTypesOptions) {
   const schema = prepareSchema(directusSchema, { typePrefix: opts.typePrefix });
-  const resolvedTypes = resolveTypes(schema);
+  const resolvedTypes = resolveTypes(schema, { requiredNotNullable: opts.requiredNotNullable });
   const typeString = compileTypes(resolvedTypes);
   return typeString;
 }

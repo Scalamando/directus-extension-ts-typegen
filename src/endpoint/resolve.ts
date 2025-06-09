@@ -64,7 +64,11 @@ export type M2AField = {
   relatedCollections: Array<{ collection: string; field: string }>;
 };
 
-export function resolveTypes(schema: Schema) {
+export interface ResolveTypesOptions {
+  requiredNotNullable?: boolean;
+}
+
+export function resolveTypes(schema: Schema, opts: ResolveTypesOptions) {
   let types: ResolvedSchema = {};
 
   for (const collectionName in schema) {
@@ -97,10 +101,13 @@ export function resolveTypes(schema: Schema) {
   return types;
 }
 
-function resolvePrimitiveType(field: Field): PrimitiveField {
+interface ResolvePrimitiveTypeOptions {
+  requiredNotNullable?: boolean;
+}
+function resolvePrimitiveType(field: Field, opts?: ResolvePrimitiveTypeOptions): PrimitiveField {
   return {
     kind: "primitive",
-    nullable: !field.required || !!field.nullable,
+    nullable: opts?.requiredNotNullable ? !field.required || !!field.nullable : !!field.nullable,
     type: field.type,
   };
 }

@@ -20,7 +20,10 @@ export default defineEndpoint({
 
       const types = generateTypes(
         { collections, fields, relations },
-        { typePrefix: req.query.typePrefix as string }
+        {
+          typePrefix: req.query.typePrefix as string,
+          requiredNotNullable: Boolean(req.query.requiredNotNullable),
+        }
       );
 
       res.json({ types });

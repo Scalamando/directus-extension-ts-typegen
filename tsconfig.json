@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
+    "module": "ES2022",
     "target": "ES2019",
     "lib": ["ES2019", "DOM"],
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
