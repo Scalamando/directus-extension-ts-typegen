@@ -9,6 +9,9 @@ import {
 export function compileTypes(schema: ResolvedSchema) {
   let typeString = "";
 
+  typeString += compileSchemaType(schema);
+  typeString += "\n\n";
+
   for (const collectionName in schema) {
     const collection = schema[collectionName]!;
     typeString += compileCollectionType(collection, schema);
@@ -146,6 +149,14 @@ function compileStructuredType(field: StructuredField): string {
     default:
       return "unknown";
   }
+}
+
+function compileSchemaType(schema: ResolvedSchema) {
+  return `export interface Schema {
+${Object.entries(schema).map(
+  ([name, collection]) => `  ${name}: ${collection.typeName}${collection.singleton ? "" : "[]"}`
+)}
+}`;
 }
 
 function quoteSpecial(name: string) {
