@@ -268,5 +268,5 @@ function isPresentational(field: Field) {
 }
 
 function isNullable(field: Field, requiredNotNullable: boolean = false) {
-  return requiredNotNullable ? !field.required || !!field.nullable : !!field.nullable;
+  return requiredNotNullable ? !field.required && !!field.nullable : !!field.nullable;
 }
