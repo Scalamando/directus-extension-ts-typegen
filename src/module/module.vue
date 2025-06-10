@@ -39,10 +39,12 @@ watchDebounced([typePrefix, requiredNotNullable], () => execute(), {
     <div class="page">
       <div class="options">
         <h2 class="heading">Options</h2>
+
         <label for="required-not-nullable">Required Not Nullable</label>
-        <v-checkbox v-model="requiredNotNullable" id="required-not-nullable" block
-          >Treat required fields as non-nullable</v-checkbox
-        >
+        <v-checkbox v-model="requiredNotNullable" id="required-not-nullable" block>
+          Treat required fields as non-nullable
+        </v-checkbox>
+
         <label for="type-prefix">Type Prefix</label>
         <v-input v-model="typePrefix" id="type-prefix" placeholder="Enter a type prefix..." trim />
       </div>
@@ -51,11 +53,12 @@ watchDebounced([typePrefix, requiredNotNullable], () => execute(), {
         <template #fallback>
           <p>Loading types &hellip;</p>
         </template>
+
         <CodeHighlighter
           :code="state.types"
           :class="['code', isLoading && 'loading']"
           :loading="isLoading"
-        ></CodeHighlighter>
+        />
       </Suspense>
     </div>
   </private-view>

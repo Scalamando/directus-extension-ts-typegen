@@ -88,7 +88,6 @@ export function resolveTypes(schema: Schema, opts: ResolveTypesOptions) {
           types[collectionName].fields[fieldName] = resolvePrimitiveType(field, opts);
         }
       } else {
-        // Relational
         const relation = resolveRelation(field, collectionName, schema, opts);
         if (relation == null) continue;
 
@@ -189,7 +188,6 @@ function resolveRelation(
         .filter(
           ({ collection, field }) =>
             field != null &&
-            // isInvalid
             schema[collection] != null &&
             schema[collection]!.fields[field] != null
         ) as Array<{

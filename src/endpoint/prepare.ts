@@ -67,17 +67,16 @@ export interface Relation {
   oneAllowedCollections: string[] | null;
 }
 
+export const PRIMARY_KEY = Symbol("pkey");
+
 export interface PrepareSchemaInput {
   collections: Array<DirectusCollection>;
   fields: Array<DirectusField>;
   relations: Array<DirectusRelation>;
 }
-
 export interface PrepareSchemaOptions {
   typePrefix?: string;
 }
-
-export const PRIMARY_KEY = Symbol("pkey");
 
 export function prepareSchema(
   { collections, fields, relations }: PrepareSchemaInput,
