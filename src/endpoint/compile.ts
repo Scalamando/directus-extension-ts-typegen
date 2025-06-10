@@ -62,6 +62,10 @@ function compileFieldType(field: FieldType, schema: ResolvedSchema): string {
     return `${Array.from(fieldTypes).join(" | ")} | ${collectionTypeNames.join(" | ")}`;
   }
 
+  if(field.kind === "m2a-discriminator") {
+    return `${compileFieldType(field.primitive, schema)} | ${field.relatedCollections.map(c => `"${c.collection}"`).join(" | ")}`
+  }
+
   // Below must be M2O or O2M
 
   const collectionTypeName = schema[field.relatedCollection]!.typeName;

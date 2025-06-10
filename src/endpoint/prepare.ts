@@ -137,6 +137,12 @@ export function prepareSchema(
       schema[newRelation.manyCollection]!.fields[newRelation.manyField] != null
     ) {
       schema[newRelation.manyCollection]!.fields[newRelation.manyField]!.relation = newRelation;
+
+      // M2A
+      if (newRelation.oneCollectionField) {
+        schema[newRelation.manyCollection]!.fields[newRelation.oneCollectionField]!.relation =
+          newRelation;
+      }
     }
 
     // O2M

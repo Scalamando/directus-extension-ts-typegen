@@ -7,7 +7,13 @@ export type CollectionType = {
   singleton: boolean;
   fields: Record<string, FieldType>;
 };
-export type FieldType = PrimitiveField | StructuredField | M2OField | O2MField | M2AField;
+export type FieldType =
+  | PrimitiveField
+  | StructuredField
+  | M2OField
+  | O2MField
+  | M2AField
+  | M2ADiscriminatorField;
 
 export type PrimitiveField = {
   kind: "primitive";
@@ -59,6 +65,12 @@ export type O2MField = {
 };
 export type M2AField = {
   kind: "m2a";
+  nullable: boolean;
+  primitive: PrimitiveField;
+  relatedCollections: Array<{ collection: string; field: string }>;
+};
+export type M2ADiscriminatorField = {
+  kind: "m2a-discriminator";
   nullable: boolean;
   primitive: PrimitiveField;
   relatedCollections: Array<{ collection: string; field: string }>;
@@ -121,7 +133,7 @@ function resolveRelation(
   collection: string,
   schema: Schema,
   { requiredNotNullable }: ResolveRelationOptions = {}
-): M2OField | O2MField | M2AField | null {
+): M2OField | O2MField | M2AField | M2ADiscriminatorField | null {
   const relation = field.relation!;
 
   // M2O Relation
@@ -170,31 +182,35 @@ function resolveRelation(
     };
   }
 
-  // M2A Relation
-  if (
-    collection === relation.manyCollection &&
-    field.name === relation.manyField &&
-    relation.oneAllowedCollections != null
-  ) {
-    return {
-      kind: "m2a",
-      nullable: isNullable(field, requiredNotNullable),
-      primitive: resolvePrimitiveType(field),
-      relatedCollections: relation.oneAllowedCollections
-        .map((c) => ({
-          collection: c,
-          field: schema[c]?.fields[PRIMARY_KEY]?.name,
-        }))
-        .filter(
-          ({ collection, field }) =>
-            field != null &&
-            schema[collection] != null &&
-            schema[collection]!.fields[field] != null
-        ) as Array<{
-        collection: string;
-        field: string;
-      }>,
-    };
+  // M2A
+  if (collection === relation.manyCollection && relation.oneAllowedCollections != null) {
+    const relatedCollections = relation.oneAllowedCollections
+      .map((c) => ({
+        collection: c,
+        field: schema[c]?.fields[PRIMARY_KEY]?.name,
+      }))
+      .filter(
+        (item): item is { collection: string; field: string } =>
+          item.field != null &&
+          schema[item.collection] != null &&
+          schema[item.collection]!.fields[item.field] != null
+      );
+
+    if (field.name === relation.manyField) {
+      return {
+        kind: "m2a",
+        nullable: isNullable(field, requiredNotNullable),
+        primitive: resolvePrimitiveType(field),
+        relatedCollections,
+      };
+    } else if (field.name === relation.oneCollectionField) {
+      return {
+        kind: "m2a-discriminator",
+        nullable: isNullable(field, requiredNotNullable),
+        primitive: resolvePrimitiveType(field),
+        relatedCollections,
+      };
+    }
   }
 
   // We shouldn't normally land here, but some directus internal relations seem to be setup differently?
@@ -207,7 +223,7 @@ interface ResolveStructuredTypeOptions {
 }
 function resolveStructuredType(
   field: Field,
-  { requiredNotNullable }: ResolveStructuredTypeOptions= {}
+  { requiredNotNullable }: ResolveStructuredTypeOptions = {}
 ): StructuredField {
   switch (field.interface?.name) {
     case "list":
