@@ -76,12 +76,31 @@ const types = computed(() =>
   </private-view>
 </template>
 
+<style>
+#main-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+
+  > .content-wrapper {
+    overflow: hidden;
+    display: block !important;
+  }
+}
+</style>
+
 <style scoped>
+.header-icon {
+  --v-button-color-disabled: var(--theme--foreground);
+}
+
 .page {
   padding: 0 var(--content-padding);
+  padding-bottom: var(--content-padding);
   display: flex;
   flex-direction: row-reverse;
   gap: 1rem;
+  height: 100%;
 
   .options {
     display: flex;
@@ -105,23 +124,26 @@ const types = computed(() =>
       color: var(--theme--form--field--label--foreground);
     }
 
-    .v-input, .v-checkbox {
+    .v-input,
+    .v-checkbox {
       margin-bottom: 16px;
     }
   }
+
+  .code {
+    max-width: 100%;
+    width: 100%;
+
+    border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+    border-radius: var(--theme--border-radius);
+    border-color: var(--theme--form--field--input--border-color-hover);
+    box-shadow: var(--theme--form--field--input--box-shadow-hover);
+  }
 }
 
-.code {
-  max-width: 100%;
-  width: 80ch;
-
-  border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-  border-radius: var(--theme--border-radius);
-  border-color: var(--theme--form--field--input--border-color-hover);
-  box-shadow: var(--theme--form--field--input--box-shadow-hover);
-}
-
-.header-icon {
-  --v-button-color-disabled: var(--theme--foreground);
+@media screen and (max-width: 1024px) {
+  .page .options {
+    flex-direction: row;
+  }
 }
 </style>

@@ -57,17 +57,17 @@ const { copy, copied } = useClipboard({ source: formattedCode });
 
       <v-progress-circular v-if="props.loading" indeterminate />
     </div>
-    <div v-html="highlightedCode"></div>
+    <div v-html="highlightedCode" class="content"></div>
   </div>
 </template>
 
 <style>
 .container {
   position: relative;
+  overflow: hidden;
 }
 
 .toolbar {
-  position: sticky;
   padding: 1rem;
   display: flex;
   justify-content: space-between;
@@ -81,6 +81,11 @@ const { copy, copied } = useClipboard({ source: formattedCode });
   .content {
     gap: 0.5em;
   }
+}
+
+.content {
+  overflow: auto;
+  height: 100%;
 }
 
 /* Shiki */
