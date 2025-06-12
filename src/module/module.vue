@@ -1,31 +1,43 @@
 <script setup lang="ts">
 import { useApi } from "@directus/extensions-sdk";
-import { useAsyncState, watchDebounced } from "@vueuse/core";
-import { ref } from "vue";
+import { useAsyncState } from "@vueuse/core";
+import { computed, ref } from "vue";
 import CodeHighlighter from "./CodeHighlighter.vue";
+import { generateTypes } from "../shared/typegen";
+import { DirectusCollection, DirectusField, DirectusRelation } from "../shared/types/directus";
 
 const api = useApi();
 
 const typePrefix = ref("");
 const requiredNotNullable = ref(false);
 
-const { state, isLoading, execute } = useAsyncState(
-  () =>
-    api
-      .get<{ types: string }>(`/ts-typegen/types`, {
-        params: {
+const { state: collections, isLoading: isLoadingCollections } = useAsyncState(
+  () => api.get<{ data: DirectusCollection[] }>("/collections").then((res) => res.data.data),
+  []
+);
+const { state: fields, isLoading: isLoadingFields } = useAsyncState(
+  () => api.get<{ data: DirectusField[] }>("/fields").then((res) => res.data.data),
+  []
+);
+const { state: relations, isLoading: isLoadingRelations } = useAsyncState(
+  () => api.get<{ data: DirectusRelation[] }>("/relations?limit=-1").then((res) => res.data.data),
+  []
+);
+const isLoading = computed(
+  () => isLoadingCollections.value && isLoadingRelations.value && isLoadingFields.value
+);
+
+const types = computed(() =>
+  isLoading.value
+    ? ""
+    : generateTypes(
+        { collections: collections.value, fields: fields.value, relations: relations.value },
+        {
           typePrefix: typePrefix.value,
           requiredNotNullable: requiredNotNullable.value,
-        },
-      })
-      .then((res) => res.data),
-  { types: "" },
-  { resetOnExecute: false }
+        }
+      )
 );
-watchDebounced([typePrefix, requiredNotNullable], () => execute(), {
-  debounce: 500,
-  maxWait: 1000,
-});
 </script>
 
 <template>
@@ -55,7 +67,7 @@ watchDebounced([typePrefix, requiredNotNullable], () => execute(), {
         </template>
 
         <CodeHighlighter
-          :code="state.types"
+          :code="types"
           :class="['code', isLoading && 'loading']"
           :loading="isLoading"
         />

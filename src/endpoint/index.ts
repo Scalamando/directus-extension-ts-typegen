@@ -1,5 +1,5 @@
 import { defineEndpoint } from "@directus/extensions-sdk";
-import { generateTypes } from "./typegen";
+import { generateTypes } from "../shared/typegen";
 
 export default defineEndpoint({
   id: "ts-typegen",
