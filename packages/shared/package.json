@@ -1,0 +1,43 @@
+{
+  "name": "@directus-ts-typegen/shared",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "rimraf dist && tsc"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./prepare": {
+      "types": "./dist/prepare.d.ts",
+      "import": "./dist/prepare.js"
+    },
+    "./compile": {
+      "types": "./dist/compile.d.ts",
+      "import": "./dist/compile.js"
+    },
+    "./resolve": {
+      "types": "./dist/resolve.d.ts",
+      "import": "./dist/resolve.js"
+    },
+    "./types": {
+      "types": "./dist/types/directus.d.ts",
+      "import": "./dist/types/directus.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/index.d.ts"
+      ]
+    }
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "pluralize-esm": "^9.0.5",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.8.3"
+  },
+  "packageManager": "pnpm@10.10.0"
+}

@@ -1,5 +1,5 @@
 import { defineModule } from "@directus/extensions-sdk";
-import ModuleComponent from "./module.vue";
+import IndexView from "./views/index.vue";
 
 export default defineModule({
   id: "ts-typegen",
@@ -8,7 +8,7 @@ export default defineModule({
   routes: [
     {
       path: "",
-      component: ModuleComponent,
+      component: IndexView,
     },
   ],
   preRegisterCheck(user) {

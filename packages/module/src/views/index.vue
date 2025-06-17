@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { generateTypes } from "@directus-ts-typegen/shared";
+import type { DirectusCollection, DirectusField, DirectusRelation } from "@directus-ts-typegen/shared/types";
 import { useApi } from "@directus/extensions-sdk";
 import { useAsyncState } from "@vueuse/core";
 import { computed, ref } from "vue";
-import CodeHighlighter from "./CodeHighlighter.vue";
-import { generateTypes } from "../shared/typegen";
-import { DirectusCollection, DirectusField, DirectusRelation } from "../shared/types/directus";
+import CodeHighlighter from "../components/CodeHighlighter.vue";
 
 const api = useApi();
 

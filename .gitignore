@@ -1,4 +1,8 @@
 .DS_Store
 node_modules/
 dist/
+.turbo/
+
+# directus docker
 data/
+uploads/
