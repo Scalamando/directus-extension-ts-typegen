@@ -1,0 +1,13 @@
+{
+  "references": [
+    {
+      "path": "./packages/cli"
+    },
+    {
+      "path": "./packages/module"
+    },
+    {
+      "path": "./packages/shared"
+    }
+  ]
+}

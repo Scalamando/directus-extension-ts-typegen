@@ -1,5 +1,5 @@
-import { Field, PRIMARY_KEY, Schema } from "./prepare";
-import { DirectusFieldTreeChoice } from "./types/directus";
+import { type Field, PRIMARY_KEY, type Schema } from "./prepare";
+import { type DirectusFieldTreeChoice } from "./types/directus";
 
 export type ResolvedSchema = Record<string, CollectionType>;
 export type CollectionType = {

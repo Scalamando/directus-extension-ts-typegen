@@ -1,29 +1,26 @@
 {
   "compilerOptions": {
-    "module": "ES2022",
-    "target": "ES2019",
-    "lib": ["ES2019", "DOM"],
-    "moduleResolution": "bundler",
-    "strict": true,
-    "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "noUncheckedIndexedAccess": true,
-    "noUnusedParameters": true,
-    "alwaysStrict": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictBindCallApply": true,
-    "strictPropertyInitialization": true,
-    "resolveJsonModule": false,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "allowSyntheticDefaultImports": true,
+    "target": "ES2022",
     "isolatedModules": true,
-    "rootDir": "./src"
+    "verbatimModuleSyntax": true,
+    "rootDir": "./src",
+
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+
+    "module": "es2019",
+    "moduleResolution": "bundler",
+    "sourceMap": true,
+    "outDir": "./dist",
+
+    "declaration": true,
+    "composite": true,
+    "declarationMap": true,
+
+    "lib": ["ES2022", "DOM"]
   },
   "include": ["./src/**/*.ts"]
 }

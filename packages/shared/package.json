@@ -1,5 +1,6 @@
 {
   "name": "@directus-ts-typegen/shared",
+  "type": "module",
   "version": "0.1.0",
   "scripts": {
     "build": "rimraf dist && tsc"

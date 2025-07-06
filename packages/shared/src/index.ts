@@ -1,7 +1,7 @@
 import { compileTypes } from "./compile";
 import { prepareSchema } from "./prepare";
 import { resolveTypes } from "./resolve";
-import { DirectusCollection, DirectusField, DirectusRelation } from "./types/directus";
+import type { DirectusCollection, DirectusField, DirectusRelation } from "./types/directus";
 
 export interface GenerateTypesInput {
   collections: Array<DirectusCollection>;
