@@ -19,3 +19,8 @@ export function generateTypes(directusSchema: GenerateTypesInput, opts: Generate
   const typeString = compileTypes(resolvedTypes);
   return typeString;
 }
+
+export { resolveTypes } from "./resolve";
+export { compileTypes } from "./compile";
+export { prepareSchema } from "./prepare";
+export type { DirectusCollection, DirectusField, DirectusRelation } from "./types/directus";

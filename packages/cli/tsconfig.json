@@ -4,13 +4,15 @@
     "skipLibCheck": true,
     "target": "ES2022",
     "isolatedModules": true,
+    "verbatimModuleSyntax": true,
     "rootDir": "./src",
 
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
 
-    "module": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
     "outDir": "./dist",
 
     "declaration": true,

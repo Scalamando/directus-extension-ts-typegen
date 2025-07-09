@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-require('../dist/run');
+import '../dist/run.js';

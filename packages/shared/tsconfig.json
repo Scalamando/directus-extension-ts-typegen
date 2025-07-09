@@ -13,8 +13,8 @@
     "noImplicitOverride": true,
 
     "module": "preserve",
-    "sourceMap": true,
     "outDir": "./dist",
+    "emitDeclarationOnly": true,
 
     "declaration": true,
     "composite": true,

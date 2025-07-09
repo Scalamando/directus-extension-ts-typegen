@@ -3,30 +3,11 @@
   "type": "module",
   "version": "0.1.0",
   "scripts": {
-    "build": "rimraf dist && tsc"
+    "build": "tsup && tsc --build --clean && tsc --build"
   },
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./prepare": {
-      "types": "./dist/prepare.d.ts",
-      "import": "./dist/prepare.js"
-    },
-    "./compile": {
-      "types": "./dist/compile.d.ts",
-      "import": "./dist/compile.js"
-    },
-    "./resolve": {
-      "types": "./dist/resolve.d.ts",
-      "import": "./dist/resolve.js"
-    },
-    "./types": {
-      "types": "./dist/types/directus.d.ts",
-      "import": "./dist/types/directus.js"
-    }
-  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "typesVersions": {
     "*": {
       "*": [
@@ -38,6 +19,7 @@
   "devDependencies": {
     "pluralize-esm": "^9.0.5",
     "rimraf": "^6.0.1",
+    "tsup": "^8.5.0",
     "typescript": "^5.8.3"
   },
   "packageManager": "pnpm@10.10.0"
