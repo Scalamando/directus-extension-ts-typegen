@@ -1,7 +1,9 @@
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import process from "node:process";
-import { password as passwordInput, input, select } from "@inquirer/prompts";
+import fsp from "node:fs/promises";
+import fs from "node:fs";
+import { password as passwordInput, input, select, confirm } from "@inquirer/prompts";
 import path from "node:path";
 import {
   generateTypes,
@@ -33,6 +35,11 @@ yargs(hideBin(process.argv))
     type: "string",
     description: "Static token of your directus admin user",
   })
+  .option("output", {
+    type: "string",
+    description:
+      "Location of the file the types will be written to. If this isn't set, the types will be output to stdout",
+  })
   .command(
     ["$0", "generate"],
     "generate the types",
@@ -44,6 +51,7 @@ yargs(hideBin(process.argv))
       let email = argv.directusEmail ?? process.env.DIRECTUS_TS_TYPEGEN_EMAIL ?? "";
       let password = argv.directusPassword ?? process.env.DIRECTUS_TS_TYPEGEN_PASSWORD ?? "";
       let token = argv.directusToken ?? process.env.DIRECTUS_TS_TYPEGEN_TOKEN ?? "";
+      let output = argv.output ?? process.env.DIRECTUS_TS_TYPEGEN_OUTPUT ?? "";
 
       if (host == "") {
         host = await input({
@@ -164,7 +172,23 @@ yargs(hideBin(process.argv))
         }
       );
 
-      console.log(types);
+      if (output == "") {
+        process.stdout.write(types + "\n");
+        return;
+      }
+
+      const resolvedPath = path.isAbsolute(output) ? output : path.resolve(process.cwd(), output);
+
+      if (fs.existsSync(resolvedPath)) {
+        process.stdout.write("This file already exists and will be overwritten.\n");
+        const confirmed = await confirm({
+          message: "Are you sure?",
+          default: false,
+        });
+        if (!confirmed) return;
+      }
+
+      await fsp.writeFile(resolvedPath, types);
     }
   )
   .help()
