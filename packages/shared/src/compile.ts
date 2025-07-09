@@ -158,8 +158,8 @@ function compileStructuredType(field: StructuredField): string {
 function compileSchemaType(schema: ResolvedSchema) {
   return `export interface Schema {
 ${Object.entries(schema).map(
-  ([name, collection]) => `  ${name}: ${collection.typeName}${collection.singleton ? "" : "[]"}`
-)}
+  ([name, collection]) => `  ${name}: ${collection.typeName}${collection.singleton ? "" : "[]"};`
+).join("\n")}
 }`;
 }
 
