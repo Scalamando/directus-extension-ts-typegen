@@ -1,29 +1,23 @@
 {
   "name": "directus-extension-ts-typegen",
+  "version": "0.1.0",
   "description": "A directus extension to generate TypeScript types for your schema.",
-  "author": "Raimund Canzler <git@rai-canzler.de>",
+  "keywords": [
+    "directus",
+    "directus-extension",
+    "directus-extension-module",
+    "typescript"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/Scalamando/directus-ts-typegen"
   },
   "license": "MIT",
-  "icon": "code",
-  "version": "0.1.0",
-  "keywords": [
-    "directus",
-    "directus-extension",
-    "directus-extension-module"
-  ],
+  "author": "Raimund Canzler <git@rai-canzler.de>",
   "type": "module",
   "files": [
     "dist"
   ],
-  "directus:extension": {
-    "type": "module",
-    "path": "dist/app.js",
-    "source": "src/index.ts",
-    "host": "^10.10.0"
-  },
   "scripts": {
     "build": "directus-extension build",
     "dev": "directus-extension build -w --no-minify",
@@ -31,9 +25,9 @@
     "validate": "directus-extension validate"
   },
   "devDependencies": {
+    "@directus-ts-typegen/shared": "workspace:",
     "@directus/extensions": "^3.0.6",
     "@directus/extensions-sdk": "13.1.1",
-    "@directus-ts-typegen/shared": "workspace:",
     "@shikijs/langs": "^3.6.0",
     "@shikijs/themes": "^3.6.0",
     "@types/node": "^22.15.30",
@@ -43,5 +37,12 @@
     "typescript": "^5.8.3",
     "vue": "^3.5.16"
   },
-  "packageManager": "pnpm@10.10.0"
+  "packageManager": "pnpm@10.10.0",
+  "icon": "code",
+  "directus:extension": {
+    "type": "module",
+    "path": "dist/app.js",
+    "source": "src/index.ts",
+    "host": "^10.10.0"
+  }
 }

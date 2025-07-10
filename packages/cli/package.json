@@ -1,8 +1,18 @@
 {
   "name": "directus-ts-typegen",
-  "description": "A CLI to generate TypeScript types for your directus schema.",
-  "type": "module",
   "version": "0.1.0",
+  "description": "A CLI to generate TypeScript types for your directus schema.",
+  "keywords": [
+    "directus",
+    "typescript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Scalamando/directus-ts-typegen"
+  },
+  "license": "MIT",
+  "author": "Raimund Canzler <git@rai-canzler.de>",
+  "type": "module",
   "bin": {
     "directus-ts-typegen": "./bin/index.js"
   },
@@ -10,14 +20,6 @@
     "bin": "node ./bin/index.js",
     "build": "tsc --build"
   },
-  "keywords": [],
-  "author": "Raimund Canzler <git@rai-canzler.de>",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Scalamando/directus-ts-typegen"
-  },
-  "license": "MIT",
-  "packageManager": "pnpm@10.10.0",
   "devDependencies": {
     "@directus-ts-typegen/shared": "workspace:",
     "@inquirer/prompts": "^7.5.3",
@@ -27,5 +29,6 @@
     "tsx": "^4.20.3",
     "typescript": "^5.8.3",
     "yargs": "^18.0.0"
-  }
+  },
+  "packageManager": "pnpm@10.10.0"
 }
