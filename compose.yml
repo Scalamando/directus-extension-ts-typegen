@@ -20,7 +20,7 @@ services:
       - 8055:8055
     volumes:
       - ./uploads:/directus/uploads
-      - ./:/directus/extensions/ts-typegen:ro
+      - ./packages/module:/directus/extensions/ts-typegen:ro
     depends_on:
       - cache
       - database
