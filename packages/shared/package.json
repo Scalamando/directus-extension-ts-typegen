@@ -1,7 +1,17 @@
 {
   "name": "@directus-ts-typegen/shared",
+  "description": "Core logic to generate TypeScript types for your directus schema.",
+  "author": "Raimund Canzler <git@rai-canzler.de>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Scalamando/directus-ts-typegen"
+  },
+  "license": "MIT",
   "type": "module",
   "version": "0.1.0",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc --build"
   },
@@ -18,7 +28,6 @@
       ]
     }
   },
-  "license": "MIT",
   "devDependencies": {
     "pluralize-esm": "^9.0.5",
     "typescript": "^5.8.3"

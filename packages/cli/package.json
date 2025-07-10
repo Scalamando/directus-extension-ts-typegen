@@ -1,8 +1,8 @@
 {
   "name": "directus-ts-typegen",
-  "version": "0.1.0",
   "description": "A CLI to generate TypeScript types for your directus schema.",
   "type": "module",
+  "version": "0.1.0",
   "bin": {
     "directus-ts-typegen": "./bin/index.js"
   },
