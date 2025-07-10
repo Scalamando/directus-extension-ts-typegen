@@ -14,21 +14,24 @@
   "author": "Raimund Canzler <git@rai-canzler.de>",
   "type": "module",
   "bin": {
-    "directus-ts-typegen": "./bin/index.js"
+    "directus-ts-typegen": "./dist/run.js"
   },
   "scripts": {
-    "bin": "node ./bin/index.js",
-    "build": "tsc --build"
+    "bin": "tsx ./src/run.ts",
+    "build": "tsup"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^7.6.0",
+    "dotenv": "^17.0.1",
+    "yargs": "^18.0.0"
   },
   "devDependencies": {
     "@directus-ts-typegen/shared": "workspace:",
-    "@inquirer/prompts": "^7.5.3",
     "@types/node": "^22.15.30",
     "@types/yargs": "^17.0.33",
-    "dotenv": "^17.0.1",
+    "tsup": "^8.5.0",
     "tsx": "^4.20.3",
-    "typescript": "^5.8.3",
-    "yargs": "^18.0.0"
+    "typescript": "^5.8.3"
   },
   "packageManager": "pnpm@10.10.0"
 }
