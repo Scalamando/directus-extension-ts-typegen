@@ -4,7 +4,7 @@ import type {
   PrimitiveField,
   ResolvedSchema,
   StructuredField,
-} from "./resolve";
+} from "./resolve.ts";
 
 export function compileTypes(schema: ResolvedSchema) {
   let typeString = "";

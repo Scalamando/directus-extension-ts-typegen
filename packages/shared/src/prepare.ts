@@ -7,7 +7,7 @@ import type {
   DirectusFieldTagsMeta,
   DirectusFieldTreeMeta,
   DirectusRelation,
-} from "./types/directus";
+} from "./types/directus.ts";
 import pluralize from "pluralize-esm";
 
 export type Schema = Record<string, Collection>;

@@ -1,7 +1,7 @@
-import { compileTypes } from "./compile";
-import { prepareSchema } from "./prepare";
-import { resolveTypes } from "./resolve";
-import type { DirectusCollection, DirectusField, DirectusRelation } from "./types/directus";
+import { compileTypes } from "./compile.ts";
+import { prepareSchema } from "./prepare.ts";
+import { resolveTypes } from "./resolve.ts";
+import type { DirectusCollection, DirectusField, DirectusRelation } from "./types/directus.ts";
 
 export interface GenerateTypesInput {
   collections: Array<DirectusCollection>;
@@ -20,7 +20,7 @@ export function generateTypes(directusSchema: GenerateTypesInput, opts: Generate
   return typeString;
 }
 
-export { resolveTypes } from "./resolve";
-export { compileTypes } from "./compile";
-export { prepareSchema } from "./prepare";
-export type { DirectusCollection, DirectusField, DirectusRelation } from "./types/directus";
+export { resolveTypes } from "./resolve.ts";
+export { compileTypes } from "./compile.ts";
+export { prepareSchema } from "./prepare.ts";
+export type { DirectusCollection, DirectusField, DirectusRelation } from "./types/directus.ts";

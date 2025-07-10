@@ -3,11 +3,14 @@
   "type": "module",
   "version": "0.1.0",
   "scripts": {
-    "build": "tsup && tsc --build --clean && tsc --build"
+    "build": "tsc --build"
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "typesVersions": {
     "*": {
       "*": [
@@ -19,7 +22,6 @@
   "devDependencies": {
     "pluralize-esm": "^9.0.5",
     "rimraf": "^6.0.1",
-    "tsup": "^8.5.0",
     "typescript": "^5.8.3"
   },
   "packageManager": "pnpm@10.10.0"
