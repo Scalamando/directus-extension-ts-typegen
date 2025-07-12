@@ -7,6 +7,7 @@ import fsp from "node:fs/promises";
 import fs from "node:fs";
 import { password as passwordInput, input, select, confirm } from "@inquirer/prompts";
 import path from "node:path";
+import url from "node:url"
 import {
   generateTypes,
   type DirectusCollection,
@@ -127,7 +128,7 @@ yargs(hideBin(process.argv))
         if (tokenOrPasswordAuth == "password") {
           try {
             logger.debug("attempting to retrieve bearer token with email and password");
-            const responseBody = await fetch(path.join(host, "/auth/login"), {
+            const responseBody = await fetch(url.resolve(host, "/auth/login"), {
               method: "POST",
               body: JSON.stringify({
                 email,
@@ -149,17 +150,17 @@ yargs(hideBin(process.argv))
           bearerToken = token;
         }
 
-        const collectionUrl = path.join(host, "/collections");
+        const collectionUrl = url.resolve(host, "/collections");
         logger.debug(`Fetching collections at '${collectionUrl}'.`);
         const collections = await fetchDirectus<DirectusCollection[]>(collectionUrl, bearerToken);
         logger.debug(`Retrieved ${collections.length} collections.`);
 
-        const fieldsUrl = path.join(host, "/fields");
+        const fieldsUrl = url.resolve(host, "/fields");
         logger.debug(`Fetching fields at '${fieldsUrl}'.`);
         const fields = await fetchDirectus<DirectusField[]>(fieldsUrl, bearerToken);
         logger.debug(`Retrieved ${fields.length} fields.`);
 
-        const relationsUrl = path.join(host, "/relations");
+        const relationsUrl = url.resolve(host, "/relations");
         logger.debug(`Fetching relations at '${relationsUrl}'.`);
         const relations = await fetchDirectus<DirectusRelation[]>(relationsUrl, bearerToken);
         logger.debug(`Retrieved ${relations.length} relations.`);
