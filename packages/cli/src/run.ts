@@ -60,6 +60,13 @@ yargs(hideBin(process.argv))
         let token = argv.directusToken ?? process.env.DIRECTUS_TS_TYPEGEN_TOKEN ?? "";
         let output = argv.output ?? process.env.DIRECTUS_TS_TYPEGEN_OUTPUT ?? "";
 
+        logger.debug("Configuration values at startup:");
+        logger.debug("directus-host:", host);
+        logger.debug("directus-email:", email);
+        logger.debug("directus-password:", password.length > 0 ? "<hidden>" : "<empty>");
+        logger.debug("directus-token:", token.length > 0 ? "<hidden>" : "<empty>");
+        logger.debug("directus-output:", output);
+
         if (host == "") {
           host = await input({
             message: "Please enter the url of your directus instance:",
