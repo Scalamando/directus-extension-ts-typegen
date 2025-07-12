@@ -1,5 +1,8 @@
 # directus-extension-ts-typegen
 
+[![npm version](https://badge.fury.io/js/directus-extension-ts-typegen.svg)](https://badge.fury.io/js/directus-extension-ts-typegen)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A Directus extension that automatically generates TypeScript types for your Directus schema, making it easier to work with your Directus data in a type-safe manner.
 
 This extensions features support for O2M, M2O, M2M and M2A relations.
