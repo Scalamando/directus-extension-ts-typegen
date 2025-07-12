@@ -14,6 +14,8 @@ import {
   type DirectusRelation,
 } from "@directus-ts-typegen/shared";
 import "dotenv/config";
+import { makeLogger } from "./logger";
+import { fetchDirectus } from "./fetch";
 
 yargs(hideBin(process.argv))
   .option("verbose", {
@@ -47,9 +49,10 @@ yargs(hideBin(process.argv))
     "generate the types",
     () => {},
     async (argv) => {
-      try {
-        if (argv.verbose) console.info(`starting generation`);
+      const logger = makeLogger(argv.verbose ? "debug" : "info");
+      logger.debug("Using verbose logging.")
 
+      try {
         let host = argv.directusHost ?? process.env.DIRECTUS_TS_TYPEGEN_HOST ?? "";
         let email = argv.directusEmail ?? process.env.DIRECTUS_TS_TYPEGEN_EMAIL ?? "";
         let password = argv.directusPassword ?? process.env.DIRECTUS_TS_TYPEGEN_PASSWORD ?? "";
@@ -113,62 +116,55 @@ yargs(hideBin(process.argv))
           });
         }
 
+        logger.debug("Collected configuration values:");
+        logger.debug("directus-host:", host);
+        logger.debug("directus-email:", email);
+        logger.debug("directus-password:", password.length > 0 ? "<hidden>" : "<empty>");
+        logger.debug("directus-token:", token.length > 0 ? "<hidden>" : "<empty>");
+        logger.debug("directus-output:", output);
+
         let bearerToken: string;
         if (tokenOrPasswordAuth == "password") {
-          const responseBody = await fetch(path.join(host, "/auth/login"), {
-            method: "POST",
-            body: JSON.stringify({
-              email,
-              password,
-            }),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }).then((res) => res.json() as Promise<{ data: { access_token: string } }>);
-          bearerToken = responseBody.data.access_token;
+          try {
+            logger.debug("attempting to retrieve bearer token with email and password");
+            const responseBody = await fetch(path.join(host, "/auth/login"), {
+              method: "POST",
+              body: JSON.stringify({
+                email,
+                password,
+              }),
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }).then((res) => res.json() as Promise<{ data: { access_token: string } }>);
+            bearerToken = responseBody.data.access_token;
+          } catch (err) {
+            logger.error(
+              `Failed to retrieve bearer token with email and password. Please check your credentials.`
+            );
+            logger.debug(err);
+            process.exit(1);
+          }
         } else {
           bearerToken = token;
         }
 
-        const headers = {
-          Authorization: "Bearer " + bearerToken,
-        };
+        const collectionUrl = path.join(host, "/collections");
+        logger.debug(`Fetching collections at '${collectionUrl}'.`);
+        const collections = await fetchDirectus<DirectusCollection[]>(collectionUrl, bearerToken);
+        logger.debug(`Retrieved ${collections.length} collections.`);
 
-        const collections = await fetch(path.join(host, "/collections"), { headers })
-          .then(
-            (res) => res.json() as Promise<{ data: DirectusCollection[] } | { errors: string[] }>
-          )
-          .then((res) => {
-            if ("errors" in res) {
-              throw new Error(
-                `One or more errors occured when fetching the collections: \n${res.errors.join("\n")}`
-              );
-            }
-            return res.data;
-          });
+        const fieldsUrl = path.join(host, "/fields");
+        logger.debug(`Fetching fields at '${fieldsUrl}'.`);
+        const fields = await fetchDirectus<DirectusField[]>(fieldsUrl, bearerToken);
+        logger.debug(`Retrieved ${fields.length} fields.`);
 
-        const fields = await fetch(path.join(host, "/fields"), { headers })
-          .then((res) => res.json() as Promise<{ data: DirectusField[] } | { errors: string[] }>)
-          .then((res) => {
-            if ("errors" in res) {
-              throw new Error(
-                `One or more errors occured when fetching the fields: \n${res.errors.join("\n")}`
-              );
-            }
-            return res.data;
-          });
+        const relationsUrl = path.join(host, "/relations");
+        logger.debug(`Fetching relations at '${relationsUrl}'.`);
+        const relations = await fetchDirectus<DirectusRelation[]>(relationsUrl, bearerToken);
+        logger.debug(`Retrieved ${relations.length} relations.`);
 
-        const relations = await fetch(path.join(host, "/relations"), { headers })
-          .then((res) => res.json() as Promise<{ data: DirectusRelation[] } | { errors: string[] }>)
-          .then((res) => {
-            if ("errors" in res) {
-              throw new Error(
-                `One or more errors occured when fetching the relations: \n${res.errors.join("\n")}`
-              );
-            }
-            return res.data;
-          });
-
+        logger.debug(`Generating types...`);
         const types = generateTypes(
           { collections, fields, relations },
           {
@@ -176,13 +172,16 @@ yargs(hideBin(process.argv))
             requiredNotNullable: false,
           }
         );
+        logger.debug(`Finished type generation.`);
 
         if (output == "") {
+          logger.debug(`directus-output is empty, sending types to stdout.`);
           process.stdout.write(types + "\n");
           return;
         }
 
         const resolvedPath = path.isAbsolute(output) ? output : path.resolve(process.cwd(), output);
+        logger.debug(`Resolved output path: ${resolvedPath}`);
 
         if (fs.existsSync(resolvedPath)) {
           process.stdout.write("This file already exists and will be overwritten.\n");
@@ -190,14 +189,25 @@ yargs(hideBin(process.argv))
             message: "Are you sure?",
             default: false,
           });
-          if (!confirmed) return;
+          if (!confirmed) {
+            logger.info("Aborting... 👋 Until next time!");
+            process.exit(0);
+          }
         }
 
-        await fsp.writeFile(resolvedPath, types);
+        logger.debug(`Attempting to write types to output path.`);
+        try {
+          await fsp.writeFile(resolvedPath, types);
+        } catch (err) {
+          logger.error(`Failed to write types to output path.`);
+          logger.debug(err);
+        }
+        logger.debug(`Finished writing types to output path.`);
       } catch (err) {
         if (err instanceof Error && err.name === "ExitPromptError") {
-          console.log("Aborting... 👋 Until next time!");
+          logger.info("Aborting... 👋 Until next time!");
         } else {
+          logger.debug("Unexpected error:", err);
           throw err;
         }
       }
