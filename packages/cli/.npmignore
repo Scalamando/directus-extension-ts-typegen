@@ -4,3 +4,4 @@ src/
 .gitignore/
 .turbo/
 tsconfig.tsbuildinfo
+tsup.config.ts
