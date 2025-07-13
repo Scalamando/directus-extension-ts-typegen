@@ -7,7 +7,6 @@ export interface Test {
   test: string | null;
 }
 
-
 // GeoJSON Types
 
 export interface GeoJSONPoint {
@@ -25,7 +24,7 @@ export interface GeoJSONPolygon {
   coordinates: Array<Array<[number, number]>>;
 }
 
-export interface GeoJSONMultiPoint{
+export interface GeoJSONMultiPoint {
   type: "MultiPoint";
   coordinates: Array<[number, number]>;
 }

@@ -16,7 +16,7 @@ export interface Test {
   date: string | null;
   time: string | null;
   timestamp: string | null;
-  repeater: Array<{ field: string; }> | null;
+  repeater: Array<{ field: string }> | null;
   point: GeoJSONPoint | null;
   line_string: GeoJSONLineString | null;
   polygon: GeoJSONPolygon | null;
@@ -42,7 +42,6 @@ export interface Test {
   radio_buttons_numeric: 1 | 2 | null;
 }
 
-
 // GeoJSON Types
 
 export interface GeoJSONPoint {
@@ -60,7 +59,7 @@ export interface GeoJSONPolygon {
   coordinates: Array<Array<[number, number]>>;
 }
 
-export interface GeoJSONMultiPoint{
+export interface GeoJSONMultiPoint {
   type: "MultiPoint";
   coordinates: Array<[number, number]>;
 }

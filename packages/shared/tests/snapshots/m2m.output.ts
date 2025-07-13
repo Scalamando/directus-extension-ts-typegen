@@ -20,7 +20,6 @@ export interface Author {
   blogs: number[] | BlogAuthor[];
 }
 
-
 // GeoJSON Types
 
 export interface GeoJSONPoint {
@@ -38,7 +37,7 @@ export interface GeoJSONPolygon {
   coordinates: Array<Array<[number, number]>>;
 }
 
-export interface GeoJSONMultiPoint{
+export interface GeoJSONMultiPoint {
   type: "MultiPoint";
   coordinates: Array<[number, number]>;
 }

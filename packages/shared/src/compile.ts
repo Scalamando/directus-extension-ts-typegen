@@ -131,9 +131,9 @@ function compileStructuredType(field: StructuredField): string {
         field.fields
           .map(
             ({ name, type }) =>
-              `${quoteSpecial(name)}: ${compilePrimitiveType({ type } as PrimitiveField)};`
+              `${quoteSpecial(name)}: ${compilePrimitiveType({ type } as PrimitiveField)}`
           )
-          .join(" ") +
+          .join("; ") +
         " }>"
       );
     case "select-multiple-checkbox":
@@ -199,8 +199,7 @@ function quoteSpecial(name: string) {
   }
 }
 
-const GeoJSONTypes = `
-// GeoJSON Types
+const GeoJSONTypes = `// GeoJSON Types
 
 export interface GeoJSONPoint {
   type: "Point";
@@ -217,7 +216,7 @@ export interface GeoJSONPolygon {
   coordinates: Array<Array<[number, number]>>;
 }
 
-export interface GeoJSONMultiPoint{
+export interface GeoJSONMultiPoint {
   type: "MultiPoint";
   coordinates: Array<[number, number]>;
 }
