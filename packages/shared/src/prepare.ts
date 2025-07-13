@@ -1,6 +1,7 @@
 import type {
   DirectusCollection,
   DirectusField,
+  DirectusFieldDropdownMeta,
   DirectusFieldListMeta,
   DirectusFieldMultipleCheckboxMeta,
   DirectusFieldMultipleDropdownMeta,
@@ -47,6 +48,10 @@ export type FieldInterface =
   | {
       name: DirectusFieldTreeMeta["interface"];
       options: DirectusFieldTreeMeta["options"];
+    }
+  | {
+      name: DirectusFieldDropdownMeta["interface"];
+      options: DirectusFieldDropdownMeta["options"];
     }
   | {
       name: DirectusFieldMultipleDropdownMeta["interface"];

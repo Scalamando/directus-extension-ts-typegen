@@ -137,17 +137,37 @@ function compileStructuredType(field: StructuredField): string {
         " }>"
       );
     case "select-multiple-checkbox":
-      return "Array<" + field.choices.map(({ value }) => `"${value}"`).join(" | ") + ">";
+      return (
+        "Array<" +
+        field.choices
+          .map(({ value }) => `"${value}"`)
+          .concat(field.allowOther ? ["string"] : [])
+          .join(" | ") +
+        ">"
+      );
     case "select-multiple-checkbox-tree":
       return "Array<" + field.choices.flatMap(({ value }) => `"${value}"`).join(" | ") + ">";
+    case "select-dropdown":
+      return field.choices
+        .map(({ value }) => `"${value}"`)
+        .concat(field.allowOther ? ["string"] : [])
+        .join(" | ");
     case "select-multiple-dropdown":
-      return "Array<" + field.choices.map(({ value }) => `"${value}"`).join(" | ") + ">";
+      return (
+        "Array<" +
+        field.choices
+          .map(({ value }) => `"${value}"`)
+          .concat(field.allowOther ? ["string"] : [])
+          .join(" | ") +
+        ">"
+      );
     case "tags":
       return (
         "Array<" +
-        (field.allowCustom === false
-          ? field.presets?.map((value) => `"${value}"`).join(" | ")
-          : "string") +
+        (field.presets ?? [])
+          .map((value) => `"${value}"`)
+          .concat(field.allowCustom ? ["string"] : [])
+          .join(" | ") +
         ">"
       );
     default:

@@ -34,14 +34,23 @@ export type StructuredField = {
   | {
       type: "select-multiple-checkbox";
       choices: Array<{ value: string }>;
+      allowOther: boolean;
     }
   | {
       type: "select-multiple-checkbox-tree";
       choices: Array<{ value: string }>;
     }
   | {
+      type: "select-dropdown";
+      choices: Array<{ value: string }>;
+      allowOther: boolean;
+      allowNone: boolean;
+    }
+  | {
       type: "select-multiple-dropdown";
       choices: Array<{ value: string }>;
+      allowOther: boolean;
+      allowNone: boolean;
     }
   | {
       type: "tags";
@@ -76,6 +85,15 @@ export type M2ADiscriminatorField = {
   relatedCollections: Array<{ collection: string; field: string }>;
 };
 
+const structuredInterfaces = [
+  "select-multiple-checkbox-tree",
+  "select-dropdown",
+  "select-multiple-dropdown",
+  "select-multiple-checkbox",
+  "list",
+  "tags",
+];
+
 export interface ResolveTypesOptions {
   requiredNotNullable?: boolean;
 }
@@ -94,7 +112,11 @@ export function resolveTypes(schema: Schema, opts?: ResolveTypesOptions) {
       if (isPresentational(field)) continue;
 
       if (field.relation == null) {
-        if (field.type === "json" || field.type === "csv") {
+        if (
+          field.type === "json" ||
+          field.type === "csv" ||
+          structuredInterfaces.includes(field.interface?.name ?? "")
+        ) {
           types[collectionName].fields[fieldName] = resolveStructuredType(field, opts);
         } else {
           types[collectionName].fields[fieldName] = resolvePrimitiveType(field, opts);
@@ -239,6 +261,7 @@ function resolveStructuredType(
         nullable: isNullable(field, requiredNotNullable),
         type: "select-multiple-checkbox",
         choices: field.interface.options.choices,
+        allowOther: field.interface.options.allowOther || false,
       };
     case "select-multiple-checkbox-tree":
       const recurseChildren = (choice: DirectusFieldTreeChoice): Array<{ value: string }> => [
@@ -251,12 +274,23 @@ function resolveStructuredType(
         type: "select-multiple-checkbox-tree",
         choices: field.interface.options.choices.flatMap(recurseChildren),
       };
+    case "select-dropdown":
+      return {
+        kind: "structured",
+        nullable: isNullable(field, requiredNotNullable),
+        type: "select-dropdown",
+        choices: field.interface.options.choices,
+        allowOther: field.interface.options.allowOther || false,
+        allowNone: field.interface.options.allowNone || false,
+      };
     case "select-multiple-dropdown":
       return {
         kind: "structured",
         nullable: isNullable(field, requiredNotNullable),
         type: "select-multiple-dropdown",
         choices: field.interface.options.choices,
+        allowOther: field.interface.options.allowOther || false,
+        allowNone: field.interface.options.allowNone || false,
       };
     case "tags":
       return {
@@ -264,7 +298,7 @@ function resolveStructuredType(
         nullable: isNullable(field, requiredNotNullable),
         type: "tags",
         presets: field.interface.options.presets,
-        allowCustom: field.interface.options.allowCustom,
+        allowCustom: field.interface.options.allowCustom ?? true,
       };
     default:
       return {

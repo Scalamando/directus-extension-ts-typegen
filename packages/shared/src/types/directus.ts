@@ -24,6 +24,7 @@ export interface DirectusField {
     | DirectusFieldListMeta
     | DirectusFieldMultipleCheckboxMeta
     | DirectusFieldTreeMeta
+    | DirectusFieldDropdownMeta
     | DirectusFieldMultipleDropdownMeta
     | DirectusFieldTagsMeta
   );
@@ -52,6 +53,7 @@ export interface DirectusFieldMultipleCheckboxMeta {
       text: string;
       value: string;
     }>;
+    allowOther?: boolean;
   };
 }
 
@@ -72,6 +74,18 @@ export interface DirectusFieldTreeChoice {
   children?: Array<DirectusFieldTreeChoice>;
 }
 
+export interface DirectusFieldDropdownMeta {
+  interface: "select-dropdown";
+  options: {
+    choices: Array<{
+      text: string;
+      value: string;
+    }>;
+    allowOther?: boolean;
+    allowNone?: boolean;
+  };
+}
+
 export interface DirectusFieldMultipleDropdownMeta {
   interface: "select-multiple-dropdown";
   options: {
@@ -79,6 +93,8 @@ export interface DirectusFieldMultipleDropdownMeta {
       text: string;
       value: string;
     }>;
+    allowOther?: boolean;
+    allowNone?: boolean;
   };
 }
 

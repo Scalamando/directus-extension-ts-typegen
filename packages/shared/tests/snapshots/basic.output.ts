@@ -25,17 +25,17 @@ export interface Test {
   multi_polygon: GeoJSONMultiPolygon | null;
   geometry: GeoJSONGeometryCollection | null;
   checkboxes: Array<"a" | "b"> | null;
-  checkboxes_with_other: Array<"c" | "d"> | null;
+  checkboxes_with_other: Array<"c" | "d" | string> | null;
   checkboxes_tree: Array<"a" | "b" | "c"> | null;
   dropdown_multiple: Array<"a" | "b" | "c"> | null;
-  dropdown_multiple_with_other: Array<"a" | "b" | "c"> | null;
+  dropdown_multiple_with_other: Array<"a" | "b" | "c" | string> | null;
   dropdown_multiple_with_none: Array<"a" | "b"> | null;
   tags: Array<"a" | "b" | "c"> | null;
-  tags_with_other: Array<string> | null;
+  tags_with_other: Array<"a" | "b" | "c" | string> | null;
   block_editor: unknown | null;
-  dropdown: string | null;
-  dropdown_with_other: string | null;
-  dropdown_with_none: string | null;
+  dropdown: "a" | "b" | null;
+  dropdown_with_other: "a" | "b" | string | null;
+  dropdown_with_none: "a" | "b" | null;
 }
 
 
