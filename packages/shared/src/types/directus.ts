@@ -2,7 +2,7 @@ export interface DirectusCollection {
   collection: string;
   meta: {
     singleton: boolean;
-    system: boolean;
+    system?: boolean;
   };
 }
 
@@ -16,7 +16,7 @@ export interface DirectusField {
     is_primary_key: boolean;
     foreign_key_table: string | null;
     foreign_key_column: string | null;
-  };
+  } | null;
   meta: {
     required: boolean;
   } & (
@@ -31,7 +31,7 @@ export interface DirectusField {
 
 export interface DirectusFieldMeta {
   interface: string | null;
-  options: null;
+  options: unknown | null;
 }
 
 export interface DirectusFieldListMeta {
@@ -93,7 +93,7 @@ export interface DirectusFieldTagsMeta {
 export interface DirectusRelation {
   collection: string;
   field: string;
-  related_collection: string;
+  related_collection: string | null;
   meta: {
     many_collection: string | null;
     many_field: string | null;
@@ -105,5 +105,5 @@ export interface DirectusRelation {
   schema?: {
     foreign_key_table: string;
     foreign_key_column: string;
-  };
+  } | null;
 }

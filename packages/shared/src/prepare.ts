@@ -89,7 +89,7 @@ export function prepareSchema(
       name: collection.collection,
       typeName: toTypeName(collection.collection, opts.typePrefix),
       singleton: collection.meta.singleton,
-      system: collection.meta.system,
+      system: collection.meta.system || false,
       fields: {},
     } satisfies Collection;
   }
