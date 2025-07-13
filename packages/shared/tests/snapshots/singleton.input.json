@@ -1,0 +1,47 @@
+{
+  "collections": [
+    {
+      "collection": "test",
+      "meta": {
+        "singleton": true 
+      }
+    }
+  ],
+  "fields": [
+    {
+      "collection": "test",
+      "field": "id",
+      "type": "integer",
+      "schema": {
+        "data_type": "integer",
+        "is_nullable": false,
+        "is_primary_key": true,
+        "foreign_key_table": null,
+        "foreign_key_column": null
+      },
+      "meta": {
+        "interface": "input",
+        "options": null,
+        "required": false
+      }
+    },
+    {
+      "collection": "test",
+      "field": "test",
+      "type": "text",
+      "schema": {
+        "data_type": "text",
+        "is_nullable": true,
+        "is_primary_key": false,
+        "foreign_key_table": null,
+        "foreign_key_column": null
+      },
+      "meta": {
+        "interface": "input-code",
+        "options": null,
+        "required": true
+      }
+    }
+  ],
+  "relations": []
+}

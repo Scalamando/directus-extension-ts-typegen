@@ -27,14 +27,16 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc --build",
-    "dev": "tsc --build --watch"
+    "build": "tsc --project tsconfig.build.json --build",
+    "dev": "tsc --project tsconfig.build.json --build --watch",
+    "test": "vitest"
   },
   "dependencies": {
     "pluralize-esm": "^9.0.5"
   },
   "devDependencies": {
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
   },
   "packageManager": "pnpm@10.10.0"
 }
