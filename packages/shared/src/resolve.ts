@@ -55,6 +55,11 @@ export type StructuredField = {
       allowNone: boolean;
     }
   | {
+      type: "select-radio";
+      fieldType: string;
+      choices: Array<{ value: string }>;
+    }
+  | {
       type: "tags";
       presets: Array<string>;
       allowCustom: boolean;
@@ -92,6 +97,7 @@ const structuredInterfaces = [
   "select-dropdown",
   "select-multiple-dropdown",
   "select-multiple-checkbox",
+  "select-radio",
   "list",
   "tags",
 ];
@@ -294,6 +300,14 @@ function resolveStructuredType(
         choices: field.interface.options.choices,
         allowOther: field.interface.options.allowOther || false,
         allowNone: field.interface.options.allowNone || false,
+      };
+    case "select-radio":
+      return {
+        kind: "structured",
+        nullable: isNullable(field, requiredNotNullable),
+        type: "select-radio",
+        fieldType: field.type,
+        choices: field.interface.options.choices,
       };
     case "tags":
       return {

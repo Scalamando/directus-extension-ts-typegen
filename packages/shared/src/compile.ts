@@ -147,12 +147,13 @@ function compileStructuredType(field: StructuredField): string {
       );
     case "select-multiple-checkbox-tree":
       return "Array<" + field.choices.flatMap(({ value }) => `"${value}"`).join(" | ") + ">";
-    case "select-dropdown":
+    case "select-dropdown": {
       const type = compilePrimitiveType({ type: field.fieldType } as PrimitiveField);
       return field.choices
         .map(({ value }) => (type === "string" ? `"${value}"` : `${value}`))
         .concat(field.allowOther ? [type] : [])
         .join(" | ");
+    }
     case "select-multiple-dropdown":
       return (
         "Array<" +
@@ -162,6 +163,12 @@ function compileStructuredType(field: StructuredField): string {
           .join(" | ") +
         ">"
       );
+    case "select-radio": {
+      const type = compilePrimitiveType({ type: field.fieldType } as PrimitiveField);
+      return field.choices
+        .map(({ value }) => (type === "string" ? `"${value}"` : `${value}`))
+        .join(" | ");
+    }
     case "tags":
       return (
         "Array<" +

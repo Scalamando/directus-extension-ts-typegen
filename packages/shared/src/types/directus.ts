@@ -98,6 +98,16 @@ export interface DirectusFieldMultipleDropdownMeta {
   };
 }
 
+export interface DirectusFieldRadioMeta {
+  interface: "select-radio";
+  options: {
+    choices: Array<{
+      text: string;
+      value: string;
+    }>;
+  };
+}
+
 export interface DirectusFieldTagsMeta {
   interface: "tags";
   options: {

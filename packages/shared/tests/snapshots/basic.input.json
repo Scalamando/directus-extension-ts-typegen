@@ -2052,6 +2052,120 @@
         "validation": null,
         "validation_message": null
       }
+    },
+    {
+      "collection": "test",
+      "field": "radio_buttons",
+      "type": "string",
+      "schema": {
+        "name": "radio_buttons",
+        "table": "test",
+        "data_type": "character varying",
+        "default_value": null,
+        "generation_expression": null,
+        "max_length": 255,
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "is_generated": false,
+        "is_nullable": true,
+        "is_unique": false,
+        "is_indexed": false,
+        "is_primary_key": false,
+        "has_auto_increment": false,
+        "foreign_key_schema": null,
+        "foreign_key_table": null,
+        "foreign_key_column": null,
+        "comment": null
+      },
+      "meta": {
+        "id": 74,
+        "collection": "test",
+        "field": "radio_buttons",
+        "special": null,
+        "interface": "select-radio",
+        "options": {
+          "choices": [
+            {
+              "text": "a",
+              "value": "a"
+            },
+            {
+              "text": "b",
+              "value": "b"
+            }
+          ]
+        },
+        "display": null,
+        "display_options": null,
+        "readonly": false,
+        "hidden": false,
+        "sort": 39,
+        "width": "full",
+        "translations": null,
+        "note": null,
+        "conditions": null,
+        "required": false,
+        "group": null,
+        "validation": null,
+        "validation_message": null
+      }
+    },
+    {
+      "collection": "test",
+      "field": "radio_buttons_numeric",
+      "type": "integer",
+      "schema": {
+        "name": "radio_buttons_numeric",
+        "table": "test",
+        "data_type": "integer",
+        "default_value": null,
+        "generation_expression": null,
+        "max_length": null,
+        "numeric_precision": 32,
+        "numeric_scale": 0,
+        "is_generated": false,
+        "is_nullable": true,
+        "is_unique": false,
+        "is_indexed": false,
+        "is_primary_key": false,
+        "has_auto_increment": false,
+        "foreign_key_schema": null,
+        "foreign_key_table": null,
+        "foreign_key_column": null,
+        "comment": null
+      },
+      "meta": {
+        "id": 75,
+        "collection": "test",
+        "field": "radio_buttons_numeric",
+        "special": null,
+        "interface": "select-radio",
+        "options": {
+          "choices": [
+            {
+              "text": "First",
+              "value": 1
+            },
+            {
+              "text": "Second",
+              "value": 2
+            }
+          ]
+        },
+        "display": null,
+        "display_options": null,
+        "readonly": false,
+        "hidden": false,
+        "sort": 40,
+        "width": "full",
+        "translations": null,
+        "note": null,
+        "conditions": null,
+        "required": false,
+        "group": null,
+        "validation": null,
+        "validation_message": null
+      }
     }
   ],
   "relations": []

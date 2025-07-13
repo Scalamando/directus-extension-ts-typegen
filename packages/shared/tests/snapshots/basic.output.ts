@@ -38,6 +38,8 @@ export interface Test {
   dropdown_with_none: "a" | "b" | null;
   dropdown_numeric: 1 | 2 | null;
   dropdown_numeric_with_other: 1 | 2 | number | null;
+  radio_buttons: "a" | "b" | null;
+  radio_buttons_numeric: 1 | 2 | null;
 }
 
 

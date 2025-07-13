@@ -5,6 +5,7 @@ import type {
   DirectusFieldListMeta,
   DirectusFieldMultipleCheckboxMeta,
   DirectusFieldMultipleDropdownMeta,
+  DirectusFieldRadioMeta,
   DirectusFieldTagsMeta,
   DirectusFieldTreeMeta,
   DirectusRelation,
@@ -56,6 +57,10 @@ export type FieldInterface =
   | {
       name: DirectusFieldMultipleDropdownMeta["interface"];
       options: DirectusFieldMultipleDropdownMeta["options"];
+    }
+  | {
+      name: DirectusFieldRadioMeta["interface"];
+      options: DirectusFieldRadioMeta["options"];
     }
   | {
       name: DirectusFieldTagsMeta["interface"];
