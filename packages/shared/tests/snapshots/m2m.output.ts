@@ -55,5 +55,12 @@ export interface GeoJSONMultiPolygon {
 
 export interface GeoJSONGeometryCollection {
   type: "GeometryCollection";
-  geometries: Array<GeoJSONPoint | GeoJSONLineString | GeoJSONPolygon | GeoJSONMultiPoint | GeoJSONMultiLineString | GeoJSONMultiPolygon>;
+  geometries: Array<
+    | GeoJSONPoint
+    | GeoJSONLineString
+    | GeoJSONPolygon
+    | GeoJSONMultiPoint
+    | GeoJSONMultiLineString
+    | GeoJSONMultiPolygon
+  >;
 }
