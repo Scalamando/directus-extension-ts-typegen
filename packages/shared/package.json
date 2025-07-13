@@ -29,7 +29,8 @@
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
     "dev": "tsc --watch --project tsconfig.build.json",
-    "test": "vitest"
+    "test": "vitest run",
+    "test:dev": "vitest"
   },
   "dependencies": {
     "pluralize-esm": "^9.0.5"

@@ -11,6 +11,8 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
+    "test": "turbo test",
+    "test:dev": "turbo test:dev",
     "format": "prettier . --write '!./data'"
   },
   "devDependencies": {
