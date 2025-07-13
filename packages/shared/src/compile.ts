@@ -243,4 +243,5 @@ export interface GeoJSONGeometryCollection {
     | GeoJSONMultiLineString
     | GeoJSONMultiPolygon
   >;
-}`;
+}
+`;
