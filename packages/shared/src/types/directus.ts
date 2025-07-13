@@ -86,7 +86,7 @@ export interface DirectusFieldTagsMeta {
   interface: "tags";
   options: {
     presets: Array<string>;
-    allowCustom: boolean;
+    allowCustom?: boolean;
   };
 }
 
