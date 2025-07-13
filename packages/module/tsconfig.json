@@ -11,7 +11,7 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
 
-    "module": "es2019",
+    "module": "es2022",
     "moduleResolution": "bundler",
     "sourceMap": true,
     "outDir": "./dist",
@@ -22,5 +22,5 @@
 
     "lib": ["ES2022", "DOM"]
   },
-  "include": ["./src/**/*.ts"]
+  "include": ["./src/**/*", "./src/shims.d.ts"]
 }

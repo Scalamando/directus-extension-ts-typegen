@@ -1,7 +1,8 @@
+import type { ModuleConfig } from "@directus/extensions";
 import { defineModule } from "@directus/extensions-sdk";
 import IndexView from "./views/index.vue";
 
-export default defineModule({
+const config: ModuleConfig = defineModule({
   id: "ts-typegen",
   name: "TS TypeGen",
   icon: "code",
@@ -15,3 +16,5 @@ export default defineModule({
     return user.admin_access;
   },
 });
+
+export default config;
