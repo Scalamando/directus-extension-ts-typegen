@@ -22,5 +22,8 @@
 
     "lib": ["ES2022"]
   },
-  "include": ["./src/**/*.ts"]
+  "include": ["./src/**/*.ts"],
+  "watchOptions": {
+    "excludeDirectories": ["node_modules", "dist", ".turbo"]
+  }
 }
