@@ -26,6 +26,7 @@ export type StructuredField = {
 } & (
   | {
       type: "unknown";
+      fieldType: string;
     }
   | {
       type: "list";
@@ -43,6 +44,7 @@ export type StructuredField = {
   | {
       type: "select-dropdown";
       choices: Array<{ value: string }>;
+      fieldType: string;
       allowOther: boolean;
       allowNone: boolean;
     }
@@ -279,6 +281,7 @@ function resolveStructuredType(
         kind: "structured",
         nullable: isNullable(field, requiredNotNullable),
         type: "select-dropdown",
+        fieldType: field.type,
         choices: field.interface.options.choices,
         allowOther: field.interface.options.allowOther || false,
         allowNone: field.interface.options.allowNone || false,
@@ -304,6 +307,7 @@ function resolveStructuredType(
       return {
         kind: "structured",
         nullable: isNullable(field, requiredNotNullable),
+        fieldType: field.type,
         type: "unknown",
       };
   }

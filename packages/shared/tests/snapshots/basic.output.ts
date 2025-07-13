@@ -36,6 +36,8 @@ export interface Test {
   dropdown: "a" | "b" | null;
   dropdown_with_other: "a" | "b" | string | null;
   dropdown_with_none: "a" | "b" | null;
+  dropdown_numeric: 1 | 2 | null;
+  dropdown_numeric_with_other: 1 | 2 | number | null;
 }
 
 

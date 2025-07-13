@@ -148,9 +148,10 @@ function compileStructuredType(field: StructuredField): string {
     case "select-multiple-checkbox-tree":
       return "Array<" + field.choices.flatMap(({ value }) => `"${value}"`).join(" | ") + ">";
     case "select-dropdown":
+      const type = compilePrimitiveType({ type: field.fieldType } as PrimitiveField);
       return field.choices
-        .map(({ value }) => `"${value}"`)
-        .concat(field.allowOther ? ["string"] : [])
+        .map(({ value }) => (type === "string" ? `"${value}"` : `${value}`))
+        .concat(field.allowOther ? [type] : [])
         .join(" | ");
     case "select-multiple-dropdown":
       return (
