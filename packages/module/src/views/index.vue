@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { generateTypes } from "@directus-ts-typegen/shared";
-import type { DirectusCollection, DirectusField, DirectusRelation } from "@directus-ts-typegen/shared/types";
+import type {
+  DirectusCollection,
+  DirectusField,
+  DirectusRelation,
+} from "@directus-ts-typegen/shared/types";
 import { useApi } from "@directus/extensions-sdk";
 import { useAsyncState } from "@vueuse/core";
 import { computed, ref } from "vue";
@@ -41,7 +45,7 @@ const types = computed(() =>
 </script>
 
 <template>
-  <private-view title="TypeScript TypeGen">
+  <private-view title="TypeScript TypeGen" id="ts-typegen">
     <template #title-outer:prepend>
       <v-button icon rounded disabled class="header-icon">
         <v-icon name="code" />
@@ -77,14 +81,16 @@ const types = computed(() =>
 </template>
 
 <style>
-#main-content {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr;
+#ts-typegen {
+  #main-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
 
-  > .content-wrapper {
-    overflow: hidden;
-    display: block !important;
+    > .content-wrapper {
+      overflow: hidden;
+      display: block !important;
+    }
   }
 }
 </style>
