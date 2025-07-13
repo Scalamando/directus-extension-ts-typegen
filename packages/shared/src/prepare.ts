@@ -80,14 +80,14 @@ export interface PrepareSchemaOptions {
 
 export function prepareSchema(
   { collections, fields, relations }: PrepareSchemaInput,
-  opts: PrepareSchemaOptions
+  opts?: PrepareSchemaOptions
 ): Schema {
   let schema: Schema = {};
 
   for (const collection of collections) {
     schema[collection.collection] = {
       name: collection.collection,
-      typeName: toTypeName(collection.collection, opts.typePrefix),
+      typeName: toTypeName(collection.collection, opts?.typePrefix),
       singleton: collection.meta.singleton,
       system: collection.meta.system || false,
       fields: {},

@@ -79,7 +79,7 @@ export type M2ADiscriminatorField = {
 export interface ResolveTypesOptions {
   requiredNotNullable?: boolean;
 }
-export function resolveTypes(schema: Schema, opts: ResolveTypesOptions) {
+export function resolveTypes(schema: Schema, opts?: ResolveTypesOptions) {
   let types: ResolvedSchema = {};
 
   for (const collectionName in schema) {
