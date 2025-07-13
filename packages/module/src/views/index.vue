@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { generateTypes } from "@directus-ts-typegen/shared";
-import type {
-  DirectusCollection,
-  DirectusField,
-  DirectusRelation,
-} from "@directus-ts-typegen/shared/types";
+import {
+  generateTypes,
+  type DirectusCollection,
+  type DirectusField,
+  type DirectusRelation,
+} from "@directus-ts-typegen/shared";
 import { useApi } from "@directus/extensions-sdk";
 import { useAsyncState } from "@vueuse/core";
 import { computed, ref } from "vue";
