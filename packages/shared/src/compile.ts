@@ -94,7 +94,7 @@ function compilePrimitiveType(field: PrimitiveField): string {
     case "hash":
     case "date":
     case "time":
-    case "datetime":
+    case "dateTime":
     case "timestamp":
       return "string";
     case "integer":

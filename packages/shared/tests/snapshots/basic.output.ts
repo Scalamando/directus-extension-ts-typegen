@@ -12,7 +12,7 @@ export interface Test {
   decimal: number | null;
   text: string | null;
   boolean: boolean | null;
-  date_time: unknown | null;
+  date_time: string | null;
   date: string | null;
   time: string | null;
   timestamp: string | null;
