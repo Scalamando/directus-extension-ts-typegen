@@ -6,7 +6,7 @@ This suite features support for O2M, M2O, M2M and M2A relations.
 
 ![preview](https://github.com/user-attachments/assets/6a24c17a-9d27-495d-aa95-93de33cdbf2f)
 
-## Packages 
+## Packages
 
 - [directus-extension-ts-typegen](./packages/module/) - Directus module extension to generate the types via gui
 - [directus-ts-typegen](./packages/cli/) - CLI to integrate the type generaton directly in your code base

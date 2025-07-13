@@ -10,16 +10,19 @@ This CLI features support for O2M (One-to-Many), M2O (Many-to-One), M2M (Many-to
 ## Installation
 
 ### Global Installation
+
 ```bash
 npm install -g directus-ts-typegen
 ```
 
 ### As Dev Dependency
+
 ```bash
 npm install --save-dev directus-ts-typegen
 ```
 
 ### One-time Usage
+
 ```bash
 npx directus-ts-typegen
 ```
@@ -35,6 +38,7 @@ npx directus-ts-typegen
 ```
 
 The CLI will ask for:
+
 - Directus instance URL (with connectivity validation)
 - Authentication method (email/password or static token)
 - Credentials based on your chosen auth method
@@ -68,11 +72,13 @@ DIRECTUS_TS_TYPEGEN_OUTPUT=./types/directus.ts
 The CLI supports two authentication methods to access your Directus instance:
 
 ### Email & Password
+
 ```bash
 npx directus-ts-typegen --directus-host https://your-directus.com --directus-email admin@example.com --directus-password yourpassword
 ```
 
 ### Static Access Token
+
 ```bash
 npx directus-ts-typegen --directus-host https://your-directus.com --directus-token your-static-token
 ```

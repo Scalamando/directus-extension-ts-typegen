@@ -7,7 +7,7 @@ import fsp from "node:fs/promises";
 import fs from "node:fs";
 import { password as passwordInput, input, select, confirm } from "@inquirer/prompts";
 import path from "node:path";
-import url from "node:url"
+import url from "node:url";
 import {
   generateTypes,
   type DirectusCollection,
@@ -51,7 +51,7 @@ yargs(hideBin(process.argv))
     () => {},
     async (argv) => {
       const logger = makeLogger(argv.verbose ? "debug" : "info");
-      logger.debug("Using verbose logging.")
+      logger.debug("Using verbose logging.");
 
       try {
         let host = argv.directusHost ?? process.env.DIRECTUS_TS_TYPEGEN_HOST ?? "";

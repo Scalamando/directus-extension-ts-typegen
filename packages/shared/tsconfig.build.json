@@ -6,7 +6,7 @@
 
     "declaration": true,
     "composite": true,
-    "declarationMap": true,
+    "declarationMap": true
   },
   "include": ["./src/**/*.ts"],
   "watchOptions": {

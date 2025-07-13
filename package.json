@@ -10,7 +10,8 @@
   "author": "Raimund Canzler <git@rai-canzler.de>",
   "scripts": {
     "build": "turbo build",
-    "dev": "turbo dev"
+    "dev": "turbo dev",
+    "format": "prettier . --write '!./data'"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.5",

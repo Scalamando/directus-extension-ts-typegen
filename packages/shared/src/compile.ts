@@ -62,8 +62,8 @@ function compileFieldType(field: FieldType, schema: ResolvedSchema): string {
     return `${Array.from(fieldTypes).join(" | ")} | ${collectionTypeNames.join(" | ")}`;
   }
 
-  if(field.kind === "m2a-discriminator") {
-    return `${compileFieldType(field.primitive, schema)} | ${field.relatedCollections.map(c => `"${c.collection}"`).join(" | ")}`
+  if (field.kind === "m2a-discriminator") {
+    return `${compileFieldType(field.primitive, schema)} | ${field.relatedCollections.map((c) => `"${c.collection}"`).join(" | ")}`;
   }
 
   // Below must be M2O or O2M
@@ -185,9 +185,11 @@ function compileStructuredType(field: StructuredField): string {
 
 function compileSchemaType(schema: ResolvedSchema) {
   return `export interface Schema {
-${Object.entries(schema).map(
-  ([name, collection]) => `  ${name}: ${collection.typeName}${collection.singleton ? "" : "[]"};`
-).join("\n")}
+${Object.entries(schema)
+  .map(
+    ([name, collection]) => `  ${name}: ${collection.typeName}${collection.singleton ? "" : "[]"};`
+  )
+  .join("\n")}
 }`;
 }
 
