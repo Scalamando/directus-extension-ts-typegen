@@ -13,7 +13,8 @@
     "dev": "turbo dev",
     "test": "turbo test",
     "test:dev": "turbo test:dev",
-    "format": "prettier . --write '!./data'"
+    "format": "prettier . --write '!./data'",
+    "ci:publish": "turbo run build test && changeset publish"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.5",

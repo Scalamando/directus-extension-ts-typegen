@@ -24,7 +24,7 @@ This extension can be installed in multiple ways:
 
 Add the extension to your Directus Dockerfile. For detailed installation instructions, refer to the [official Directus documentation](https://directus.io/docs/self-hosting/including-extensions).
 
-**Requirements:** Directus ^10.10.0
+**Requirements:** Directus >= 10.10.0
 
 ## Basic Usage
 
