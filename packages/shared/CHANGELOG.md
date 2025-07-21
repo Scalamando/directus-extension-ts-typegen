@@ -1,5 +1,11 @@
 # @directus-ts-typegen/shared
 
+## 0.2.1
+
+### Patch Changes
+
+- 9be7f48: fix: handle further nullable directus fields
+
 ## 0.2.0
 
 ### Minor Changes
