@@ -314,8 +314,8 @@ function resolveStructuredType(
         kind: "structured",
         nullable: isNullable(field, requiredNotNullable),
         type: "tags",
-        presets: field.interface.options.presets,
-        allowCustom: field.interface.options.allowCustom ?? true,
+        presets: field.interface.options?.presets ?? [],
+        allowCustom: field.interface.options?.allowCustom ?? true,
       };
     default:
       return {

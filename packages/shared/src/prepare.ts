@@ -98,8 +98,8 @@ export function prepareSchema(
     schema[collection.collection] = {
       name: collection.collection,
       typeName: toTypeName(collection.collection, opts?.typePrefix),
-      singleton: collection.meta.singleton,
-      system: collection.meta.system || false,
+      singleton: collection.meta?.singleton || false,
+      system: collection.meta?.system || false,
       fields: {},
     } satisfies Collection;
   }
@@ -111,9 +111,9 @@ export function prepareSchema(
       dataType: field.schema?.data_type ?? null,
       primaryKey: field.schema?.is_primary_key ?? null,
       nullable: field.schema?.is_nullable ?? null,
-      required: field.meta.required,
+      required: field.meta?.required || false,
       interface:
-        field.meta.interface != null
+        field.meta?.interface != null
           ? ({
               name: field.meta.interface,
               options: field.meta.options,
@@ -131,13 +131,13 @@ export function prepareSchema(
 
   for (const relation of relations) {
     const newRelation = {
-      manyCollection: relation.meta.many_collection,
-      manyField: relation.meta.many_field,
-      oneCollection: relation.meta.one_collection,
-      oneField: relation.meta.one_field,
+      manyCollection: relation.meta?.many_collection ?? null,
+      manyField: relation.meta?.many_field ?? null,
+      oneCollection: relation.meta?.one_collection ?? null,
+      oneField: relation.meta?.one_field ?? null,
       oneKeyColumn: relation.schema?.foreign_key_column ?? null,
-      oneCollectionField: relation.meta.one_collection_field,
-      oneAllowedCollections: relation.meta.one_allowed_collections,
+      oneCollectionField: relation.meta?.one_collection_field ?? null,
+      oneAllowedCollections: relation.meta?.one_allowed_collections ?? null,
     } satisfies Relation;
 
     // M2O

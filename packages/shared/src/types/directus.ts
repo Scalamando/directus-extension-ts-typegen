@@ -3,14 +3,14 @@ export interface DirectusCollection {
   meta: {
     singleton: boolean;
     system?: boolean;
-  };
+  } | null;
 }
 
 export interface DirectusField {
   collection: string;
   field: string;
   type: string;
-  schema?: {
+  schema: {
     data_type: string;
     is_nullable: boolean;
     is_primary_key: boolean;
@@ -27,7 +27,7 @@ export interface DirectusField {
     | DirectusFieldDropdownMeta
     | DirectusFieldMultipleDropdownMeta
     | DirectusFieldTagsMeta
-  );
+  ) | null;
 }
 
 export interface DirectusFieldMeta {
@@ -113,7 +113,7 @@ export interface DirectusFieldTagsMeta {
   options: {
     presets: Array<string>;
     allowCustom?: boolean;
-  };
+  } | null;
 }
 
 export interface DirectusRelation {
@@ -127,8 +127,8 @@ export interface DirectusRelation {
     one_field: string | null;
     one_collection_field: string | null;
     one_allowed_collections: string[] | null;
-  };
-  schema?: {
+  } | null;
+  schema: {
     foreign_key_table: string;
     foreign_key_column: string;
   } | null;
