@@ -4,16 +4,28 @@ import type {
   PrimitiveField,
   ResolvedSchema,
   StructuredField,
+  M2OField,
+  O2MField,
 } from "./resolve.ts";
+
+const SCHEMA_TYPE_NAME = "Schema";
+const SYSTEM_COLLECTION_PREFIX = "Custom";
 
 export function compileTypes(schema: ResolvedSchema) {
   let typeString = "";
+
+  const referencedSystemCollections = collectReferencedSystemCollections(schema);
+  if (referencedSystemCollections.length > 0) {
+    typeString += `import type { ${referencedSystemCollections.join(", ")} } from "@directus/sdk"`;
+    typeString += "\n\n";
+  }
 
   typeString += compileSchemaType(schema);
   typeString += "\n\n";
 
   for (const collectionName in schema) {
     const collection = schema[collectionName]!;
+    if (Object.keys(collection.fields).length == 0) continue;
     typeString += compileCollectionType(collection, schema);
     typeString += "\n\n";
   }
@@ -23,8 +35,47 @@ export function compileTypes(schema: ResolvedSchema) {
   return typeString;
 }
 
+const collectionToType = {
+  directus_users: "DirectusUser",
+  directus_roles: "DirectusRole",
+  directus_permissions: "DirectusPermission",
+  directus_settings: "DirectusSettings",
+  directus_files: "DirectusFile",
+  directus_folders: "DirectusFolder",
+  directus_activity: "DirectusActivity",
+  directus_notifications: "DirectusNotification",
+  directus_shares: "DirectusShare",
+  directus_flows: "DirectusFlow",
+  directus_operations: "DirectusOperation",
+  directus_panels: "DirectusPanel",
+  directus_dashboards: "DirectusDashboard",
+  directus_translations: "DirectusTranslation",
+  directus_versions: "DirectusVersion",
+  directus_revisions: "DirectusRevision",
+  directus_webhooks: "DirectusWebhook",
+  directus_presets: "DirectusPreset",
+  directus_relations: "DirectusRelation",
+  directus_fields: "DirectusField",
+  directus_collections: "DirectusCollection",
+} as const;
+export type SystemCollectionName = keyof typeof collectionToType;
+
+function collectReferencedSystemCollections(schema: ResolvedSchema) {
+  const systemCollections = new Set<SystemCollectionName>();
+  for (const collection of Object.values(schema)) {
+    if (collection.system) continue;
+    const relatedFields = Object.values(collection.fields).filter(
+      (f) => (f.kind === "o2m" || f.kind === "m2o") && f.system
+    ) as Array<M2OField | O2MField>;
+    for (const field of relatedFields) {
+      systemCollections.add(field.relatedCollection as SystemCollectionName);
+    }
+  }
+  return Array.from(systemCollections.values()).map((c) => collectionToType[c]);
+}
+
 function compileCollectionType(collection: CollectionType, schema: ResolvedSchema) {
-  return `export interface ${collection.typeName} {
+  return `export interface ${(collection.system ? SYSTEM_COLLECTION_PREFIX : "") + collection.typeName} {
 ${Object.entries(collection.fields)
   .map(
     ([name, type]) =>
@@ -44,9 +95,15 @@ function compileFieldType(field: FieldType, schema: ResolvedSchema): string {
   }
 
   if (field.kind === "m2a") {
-    const collectionTypeNames = field.relatedCollections.map(
-      ({ collection }) => schema[collection]!.typeName
-    );
+    const collectionTypeNames = field.relatedCollections.map(({ collection }) => {
+      const relatedCollection = schema[collection]!;
+      if (relatedCollection.system) {
+        return relatedCollection.typeName + `<${SCHEMA_TYPE_NAME}>`;
+      } else {
+        return relatedCollection.typeName;
+      }
+    });
+
     const fieldTypes = field.relatedCollections
       .map(({ collection, field }) => {
         const relatedField = schema[collection]!.fields[field]!;
@@ -68,21 +125,30 @@ function compileFieldType(field: FieldType, schema: ResolvedSchema): string {
 
   // Below must be M2O or O2M
 
-  const collectionTypeName = schema[field.relatedCollection]!.typeName;
-  const relatedField = schema[field.relatedCollection]!.fields[field.relatedField]!;
-  if (relatedField == null) {
-    return "unknown";
-  }
+  const relatedCollection = schema[field.relatedCollection]!;
+  if (relatedCollection.system) {
+    if (field.kind === "m2o") {
+      return `${relatedCollection.typeName}['${field.relatedField}'] | ${relatedCollection.typeName}<${SCHEMA_TYPE_NAME}>`;
+    } /* o2m */ else {
+      return `${relatedCollection.typeName}['${field.relatedField}'][] | ${relatedCollection.typeName}<${SCHEMA_TYPE_NAME}>[]`;
+    }
+  } else {
+    const collectionTypeName = relatedCollection.typeName;
+    const relatedField = relatedCollection!.fields[field.relatedField]!;
+    if (relatedField == null) {
+      return "unknown";
+    }
 
-  const fieldType = compileFieldType(
-    "primitive" in relatedField ? relatedField.primitive : relatedField,
-    schema
-  );
+    const fieldType = compileFieldType(
+      "primitive" in relatedField ? relatedField.primitive : relatedField,
+      schema
+    );
 
-  if (field.kind === "m2o") {
-    return `${fieldType} | ${collectionTypeName}`;
-  } /* o2m */ else {
-    return `${fieldType}[] | ${collectionTypeName}[]`;
+    if (field.kind === "m2o") {
+      return `${fieldType} | ${collectionTypeName}`;
+    } /* o2m */ else {
+      return `${fieldType}[] | ${collectionTypeName}[]`;
+    }
   }
 }
 
@@ -186,8 +252,13 @@ function compileStructuredType(field: StructuredField): string {
 function compileSchemaType(schema: ResolvedSchema) {
   return `export interface Schema {
 ${Object.entries(schema)
+  .filter(
+    ([_, collection]) =>
+      !collection.system || Object.values(collection.fields).some((f) => "system" in f && !f.system)
+  )
   .map(
-    ([name, collection]) => `  ${name}: ${collection.typeName}${collection.singleton ? "" : "[]"};`
+    ([name, collection]) =>
+      `  ${name}: ${(collection.system ? SYSTEM_COLLECTION_PREFIX : "") + collection.typeName}${collection.singleton || collection.system ? "" : "[]"};`
   )
   .join("\n")}
 }`;
