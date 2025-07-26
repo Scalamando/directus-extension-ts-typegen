@@ -3,7 +3,7 @@ import { type DirectusFieldTreeChoice } from "./types/directus.ts";
 
 export type ResolvedSchema = Record<string, CollectionType>;
 export type CollectionType = {
-  typeName: string;
+  name: string;
   singleton: boolean;
   system: boolean;
   fields: Record<string, FieldType>;
@@ -116,7 +116,7 @@ export function resolveTypes(schema: Schema, opts?: ResolveTypesOptions) {
   for (const collectionName in schema) {
     const isSystemCollection = schema[collectionName]!.system;
     types[collectionName] = {
-      typeName: schema[collectionName]!.typeName,
+      name: collectionName,
       singleton: schema[collectionName]!.singleton,
       system: isSystemCollection,
       fields: {},

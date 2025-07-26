@@ -10,12 +10,10 @@ import type {
   DirectusFieldTreeMeta,
   DirectusRelation,
 } from "./types/directus.ts";
-import pluralize from "pluralize-esm";
 
 export type Schema = Record<string, Collection>;
 export interface Collection {
   name: string;
-  typeName: string;
   singleton: boolean;
   system: boolean;
   fields: Record<string | symbol, Field>;
@@ -85,20 +83,15 @@ export interface PrepareSchemaInput {
   fields: Array<DirectusField>;
   relations: Array<DirectusRelation>;
 }
-export interface PrepareSchemaOptions {
-  typePrefix?: string;
-}
 
 export function prepareSchema(
-  { collections, fields, relations }: PrepareSchemaInput,
-  opts?: PrepareSchemaOptions
+  { collections, fields, relations }: PrepareSchemaInput
 ): Schema {
   let schema: Schema = {};
 
   for (const collection of collections) {
     schema[collection.collection] = {
       name: collection.collection,
-      typeName: toTypeName(collection.collection, opts?.typePrefix),
       singleton: collection.meta?.singleton || false,
       system: collection.meta?.system || false,
       fields: {},
@@ -168,16 +161,4 @@ export function prepareSchema(
   }
 
   return schema;
-}
-
-function toTypeName(name: string, prefix?: string) {
-  return (
-    (prefix ?? "") +
-    name
-      .replace(/-\s/g, "_") // remove invalid characters
-      .split("_")
-      .map((word) => pluralize.singular(word)) // use singular for types
-      .map((word) => word.slice(0, 1).toLocaleUpperCase() + word.slice(1)) // pascalize
-      .join("")
-  );
 }

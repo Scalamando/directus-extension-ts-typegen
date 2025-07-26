@@ -14,9 +14,9 @@ export interface GenerateTypesOptions {
 }
 
 export function generateTypes(directusSchema: GenerateTypesInput, opts?: GenerateTypesOptions) {
-  const schema = prepareSchema(directusSchema, { typePrefix: opts?.typePrefix });
+  const schema = prepareSchema(directusSchema);
   const resolvedTypes = resolveTypes(schema, { requiredNotNullable: opts?.requiredNotNullable });
-  const typeString = compileTypes(resolvedTypes);
+  const typeString = compileTypes(resolvedTypes, { typePrefix: opts?.typePrefix });
   return typeString;
 }
 
