@@ -15,7 +15,7 @@ export interface Post {
 export interface PostContent {
   id: number;
   posts_id: number | Post | null;
-  item: number | Body | Image | null;
+  item: string | Body | Image | null;
   collection: string | "bodies" | "images" | null;
 }
 

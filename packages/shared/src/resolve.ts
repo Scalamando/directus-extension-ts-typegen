@@ -8,22 +8,46 @@ export type CollectionType = {
   system: boolean;
   fields: Record<string, FieldType>;
 };
-export type FieldType =
-  | PrimitiveField
-  | StructuredField
-  | M2OField
-  | O2MField
-  | M2AField
-  | M2ADiscriminatorField;
+export type FieldType = PrimitiveField | AliasField | StructuredField;
 
 export type PrimitiveField = {
   kind: "primitive";
-  nullable: boolean;
+  name: string;
   type: string;
+  nullable: boolean;
   system: boolean;
+  relation: M2ORelation | O2MRelation | M2ARelation | M2ADiscriminatorRelation | null;
 };
+
+export type AliasField = {
+  kind: "alias";
+  name: string;
+  system: boolean;
+  relation: M2ORelation | O2MRelation | M2ARelation | M2ADiscriminatorRelation;
+};
+
+export type M2ORelation = {
+  kind: "m2o";
+  relatedCollection: string;
+  relatedField: string;
+};
+export type O2MRelation = {
+  kind: "o2m";
+  relatedCollection: string;
+  relatedField: string;
+};
+export type M2ARelation = {
+  kind: "m2a";
+  relatedCollections: Array<{ collection: string; field: string }>;
+};
+export type M2ADiscriminatorRelation = {
+  kind: "m2a-discriminator";
+  relatedCollections: Array<string>;
+};
+
 export type StructuredField = {
   kind: "structured";
+  name: string;
   nullable: boolean;
   system: boolean;
 } & (
@@ -68,44 +92,6 @@ export type StructuredField = {
       allowCustom: boolean;
     }
 );
-export type M2OField = {
-  kind: "m2o";
-  nullable: boolean;
-  primitive: PrimitiveField;
-  relatedCollection: string;
-  relatedField: string;
-  system: boolean;
-};
-export type O2MField = {
-  kind: "o2m";
-  nullable: boolean;
-  primitive: PrimitiveField;
-  relatedCollection: string;
-  relatedField: string;
-  system: boolean;
-};
-export type M2AField = {
-  kind: "m2a";
-  nullable: boolean;
-  primitive: PrimitiveField;
-  relatedCollections: Array<{ collection: string; field: string }>;
-};
-export type M2ADiscriminatorField = {
-  kind: "m2a-discriminator";
-  nullable: boolean;
-  primitive: PrimitiveField;
-  relatedCollections: Array<{ collection: string; field: string }>;
-};
-
-const structuredInterfaces = [
-  "select-multiple-checkbox-tree",
-  "select-dropdown",
-  "select-multiple-dropdown",
-  "select-multiple-checkbox",
-  "select-radio",
-  "list",
-  "tags",
-];
 
 export interface ResolveTypesOptions {
   requiredNotNullable?: boolean;
@@ -114,11 +100,10 @@ export function resolveTypes(schema: Schema, opts?: ResolveTypesOptions) {
   let types: ResolvedSchema = {};
 
   for (const collectionName in schema) {
-    const isSystemCollection = schema[collectionName]!.system;
     types[collectionName] = {
       name: collectionName,
       singleton: schema[collectionName]!.singleton,
-      system: isSystemCollection,
+      system: schema[collectionName]!.system,
       fields: {},
     };
 
@@ -126,21 +111,15 @@ export function resolveTypes(schema: Schema, opts?: ResolveTypesOptions) {
       const field = schema[collectionName]!.fields[fieldName]!;
       if (isPresentational(field) || isSystem(field)) continue;
 
-      if (field.relation == null) {
-        if (
-          field.type === "json" ||
-          field.type === "csv" ||
-          structuredInterfaces.includes(field.interface?.name ?? "")
-        ) {
-          types[collectionName].fields[fieldName] = resolveStructuredType(field, opts);
-        } else {
-          types[collectionName].fields[fieldName] = resolvePrimitiveType(field, opts);
+      if (isStructured(field)) {
+        types[collectionName].fields[fieldName] = resolveStructuredType(field, opts);
+      } else if (isAlias(field)) {
+        const aliasField = resolveAliasType(field, schema);
+        if (aliasField != null) {
+          types[collectionName].fields[fieldName] = aliasField;
         }
       } else {
-        const relation = resolveRelation(field, collectionName, schema, opts);
-        if (relation == null) continue;
-
-        types[collectionName].fields[fieldName] = relation;
+        types[collectionName].fields[fieldName] = resolvePrimitiveType(field, schema, opts);
       }
     }
   }
@@ -153,60 +132,41 @@ interface ResolvePrimitiveTypeOptions {
 }
 function resolvePrimitiveType(
   field: Field,
+  schema: Schema,
   { requiredNotNullable }: ResolvePrimitiveTypeOptions = {}
 ): PrimitiveField {
   return {
     kind: "primitive",
+    name: field.name,
     nullable: isNullable(field, requiredNotNullable),
     type: field.type,
     system: field.system,
+    relation: resolveRelation(field, schema),
   };
 }
 
-const systemCollections = [
-  "directus_access",
-  "directus_activity",
-  "directus_collections",
-  "directus_comments",
-  "directus_fields",
-  "directus_files",
-  "directus_folders",
-  "directus_migrations",
-  "directus_permissions",
-  "directus_policies",
-  "directus_presets",
-  "directus_relations",
-  "directus_revisions",
-  "directus_roles",
-  "directus_sessions",
-  "directus_settings",
-  "directus_users",
-  "directus_webhooks",
-  "directus_dashboards",
-  "directus_panels",
-  "directus_notifications",
-  "directus_shares",
-  "directus_flows",
-  "directus_operations",
-  "directus_translations",
-  "directus_versions",
-  "directus_extensions",
-];
+function resolveAliasType(field: Field, schema: Schema): AliasField | null {
+  const relation = resolveRelation(field, schema);
+  if (relation == null) return null;
 
-interface ResolveRelationOptions {
-  requiredNotNullable?: boolean;
+  return {
+    kind: "alias",
+    name: field.name,
+    system: field.system,
+    relation,
+  };
 }
+
 function resolveRelation(
   field: Field,
-  collection: string,
-  schema: Schema,
-  { requiredNotNullable }: ResolveRelationOptions = {}
-): M2OField | O2MField | M2AField | M2ADiscriminatorField | null {
-  const relation = field.relation!;
+  schema: Schema
+): M2ORelation | O2MRelation | M2ARelation | M2ADiscriminatorRelation | null {
+  const relation = field.relation;
+  if(relation == null) return null;
 
   // M2O Relation
   if (
-    collection === relation.manyCollection &&
+    field.collection === relation.manyCollection &&
     field.name === relation.manyField &&
     relation.oneCollection != null &&
     relation.oneKeyColumn != null
@@ -220,17 +180,14 @@ function resolveRelation(
 
     return {
       kind: "m2o",
-      nullable: isNullable(field, requiredNotNullable),
-      primitive: resolvePrimitiveType(field),
       relatedField: relation.oneKeyColumn,
       relatedCollection: relation.oneCollection,
-      system: systemCollections.includes(relation.oneCollection),
     };
   }
 
   // O2M Relation
   if (
-    collection === relation.oneCollection &&
+    field.collection === relation.oneCollection &&
     field.name === relation.oneField &&
     relation.manyCollection != null &&
     relation.manyField != null
@@ -244,16 +201,13 @@ function resolveRelation(
 
     return {
       kind: "o2m",
-      nullable: isNullable(field, requiredNotNullable),
-      primitive: resolvePrimitiveType(field),
       relatedField: relation.manyField,
       relatedCollection: relation.manyCollection,
-      system: systemCollections.includes(relation.manyCollection),
     };
   }
 
   // M2A
-  if (collection === relation.manyCollection && relation.oneAllowedCollections != null) {
+  if (field.collection === relation.manyCollection && relation.oneAllowedCollections != null) {
     const relatedCollections = relation.oneAllowedCollections
       .map((c) => ({
         collection: c,
@@ -269,16 +223,12 @@ function resolveRelation(
     if (field.name === relation.manyField) {
       return {
         kind: "m2a",
-        nullable: isNullable(field, requiredNotNullable),
-        primitive: resolvePrimitiveType(field),
         relatedCollections,
       };
     } else if (field.name === relation.oneCollectionField) {
       return {
         kind: "m2a-discriminator",
-        nullable: isNullable(field, requiredNotNullable),
-        primitive: resolvePrimitiveType(field),
-        relatedCollections,
+        relatedCollections: relation.oneAllowedCollections,
       };
     }
   }
@@ -299,6 +249,7 @@ function resolveStructuredType(
     case "list":
       return {
         kind: "structured",
+        name: field.name,
         nullable: isNullable(field, requiredNotNullable),
         type: "list",
         fields: field.interface.options.fields,
@@ -307,6 +258,7 @@ function resolveStructuredType(
     case "select-multiple-checkbox":
       return {
         kind: "structured",
+        name: field.name,
         nullable: isNullable(field, requiredNotNullable),
         type: "select-multiple-checkbox",
         choices: field.interface.options.choices,
@@ -320,6 +272,7 @@ function resolveStructuredType(
       ];
       return {
         kind: "structured",
+        name: field.name,
         nullable: isNullable(field, requiredNotNullable),
         type: "select-multiple-checkbox-tree",
         choices: field.interface.options.choices.flatMap(recurseChildren),
@@ -328,6 +281,7 @@ function resolveStructuredType(
     case "select-dropdown":
       return {
         kind: "structured",
+        name: field.name,
         nullable: isNullable(field, requiredNotNullable),
         type: "select-dropdown",
         fieldType: field.type,
@@ -339,6 +293,7 @@ function resolveStructuredType(
     case "select-multiple-dropdown":
       return {
         kind: "structured",
+        name: field.name,
         nullable: isNullable(field, requiredNotNullable),
         type: "select-multiple-dropdown",
         choices: field.interface.options.choices,
@@ -349,6 +304,7 @@ function resolveStructuredType(
     case "select-radio":
       return {
         kind: "structured",
+        name: field.name,
         nullable: isNullable(field, requiredNotNullable),
         type: "select-radio",
         fieldType: field.type,
@@ -358,6 +314,7 @@ function resolveStructuredType(
     case "tags":
       return {
         kind: "structured",
+        name: field.name,
         nullable: isNullable(field, requiredNotNullable),
         type: "tags",
         presets: field.interface.options?.presets ?? [],
@@ -367,6 +324,7 @@ function resolveStructuredType(
     default:
       return {
         kind: "structured",
+        name: field.name,
         nullable: isNullable(field, requiredNotNullable),
         fieldType: field.type,
         type: "unknown",
@@ -381,10 +339,31 @@ function isPresentational(field: Field) {
   );
 }
 
+const structuredInterfaces = [
+  "select-multiple-checkbox-tree",
+  "select-dropdown",
+  "select-multiple-dropdown",
+  "select-multiple-checkbox",
+  "select-radio",
+  "list",
+  "tags",
+];
+function isStructured(field: Field) {
+  return (
+    field.type === "json" ||
+    field.type === "csv" ||
+    structuredInterfaces.includes(field.interface?.name ?? "")
+  );
+}
+
 function isNullable(field: Field, requiredNotNullable: boolean = false) {
   return requiredNotNullable ? !field.required && !!field.nullable : !!field.nullable;
 }
 
 function isSystem(field: Field): boolean {
   return field.system;
+}
+
+function isAlias(field: Field): boolean {
+  return field.type === "alias";
 }
