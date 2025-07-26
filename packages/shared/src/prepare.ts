@@ -20,6 +20,7 @@ export interface Collection {
 }
 export interface Field {
   name: string;
+  collection: string;
   type: string;
   dataType: string | null;
   primaryKey: boolean | null;
@@ -101,6 +102,7 @@ export function prepareSchema(
   for (const field of fields) {
     const newField = {
       name: field.field,
+      collection: field.collection,
       type: field.type,
       dataType: field.schema?.data_type ?? null,
       primaryKey: field.schema?.is_primary_key ?? null,

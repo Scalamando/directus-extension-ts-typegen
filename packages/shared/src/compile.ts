@@ -1,11 +1,13 @@
 import type {
+  AliasField,
   CollectionType,
-  FieldType,
+  M2ADiscriminatorRelation,
+  M2ARelation,
+  M2ORelation,
+  O2MRelation,
   PrimitiveField,
   ResolvedSchema,
   StructuredField,
-  M2OField,
-  O2MField,
 } from "./resolve.ts";
 import pluralize from "pluralize-esm";
 
@@ -69,14 +71,18 @@ export function compileTypes(schema: ResolvedSchema, opts: CompileTypesOptions =
   function compileReferencedSystemCollections() {
     const systemCollections = new Set<SystemCollectionName>();
 
-    for (const collection of Object.values(schema)) {
-      if (collection.system) continue;
+    for (const collectionName in schema) {
+      if (schema[collectionName]!.system) continue;
 
-      const relatedFields = Object.values(collection.fields).filter(
-        (f) => (f.kind === "o2m" || f.kind === "m2o") && f.system
-      ) as Array<M2OField | O2MField>;
-      for (const field of relatedFields) {
-        systemCollections.add(field.relatedCollection as SystemCollectionName);
+      for (const fieldName in schema[collectionName]!.fields) {
+        const field = schema[collectionName]!.fields[fieldName]!;
+        if (
+          (field.kind === "primitive" || field.kind === "alias") &&
+          (field.relation?.kind === "m2o" || field.relation?.kind === "o2m") &&
+          schema[field.relation.relatedCollection]?.system
+        ) {
+          systemCollections.add(field.relation.relatedCollection as SystemCollectionName);
+        }
       }
     }
 
@@ -87,100 +93,66 @@ export function compileTypes(schema: ResolvedSchema, opts: CompileTypesOptions =
   }
 
   function compileSchemaType(schema: ResolvedSchema) {
-    const nonEmptyCollections = Object.entries(schema).filter(
-      ([_, collection]) =>
+    const nonEmptyCollections = Object.values(schema).filter(
+      (collection) =>
         !collection.system ||
         Object.values(collection.fields).some((f) => "system" in f && !f.system)
     );
     return collectionTempl(
       "Schema",
-      nonEmptyCollections.map(([name, collection]) => ({
-        name,
-        type: `${(collection.system ? systemCollectionPrefix : "") + toTypeName(collection.name)}${collection.singleton || collection.system ? "" : "[]"}`,
+      nonEmptyCollections.map((collection) => ({
+        name: collection.name,
+        type: `${(collection.system ? systemCollectionPrefix : "") + toTypeName(collection.name)}${
+          collection.singleton || collection.system ? "" : "[]"
+        }`,
       }))
     );
   }
 
   function compileCollectionType(collection: CollectionType, schema: ResolvedSchema) {
-    return `export interface ${(collection.system ? systemCollectionPrefix : "") + toTypeName(collection.name)} {
-${Object.entries(collection.fields)
-  .map(
-    ([name, type]) =>
-      `  ${name}: ${compileFieldType(type, schema)}${type.nullable ? " | null" : ""};`
-  )
-  .join("\n")}
-}`;
+    return collectionTempl(
+      (collection.system ? systemCollectionPrefix : "") + toTypeName(collection.name),
+      Object.entries(collection.fields).map(([name, field]) => ({
+        name,
+        type: `${
+          field.kind === "structured"
+            ? compileStructuredType(field)
+            : field.kind === "alias"
+              ? compileAliasType(field, schema)
+              : compilePrimitiveType(field, schema)
+        }${"nullable" in field && field.nullable ? " | null" : ""}`,
+      }))
+    );
   }
 
-  function compileFieldType(field: FieldType, schema: ResolvedSchema): string {
-    if (field.kind === "structured") {
-      return `${compileStructuredType(field)}`;
+  function compilePrimitiveType(field: PrimitiveField, schema: ResolvedSchema): string {
+    const dataType = compileDataType(field.type);
+    if (field.relation == null) {
+      return dataType;
     }
 
-    if (field.kind === "primitive") {
-      return `${compilePrimitiveType(field)}`;
-    }
+    const relatedType = compileRelationType(field.relation, schema);
+    return `${dataType} | ${relatedType}`;
+  }
 
-    if (field.kind === "m2a") {
-      const collectionTypeNames = field.relatedCollections.map(({ collection }) => {
-        const relatedCollection = schema[collection]!;
-        if (relatedCollection.system) {
-          return toTypeName(relatedCollection.name) + `<${schemaTypeName}>`;
-        } else {
-          return toTypeName(relatedCollection.name);
-        }
-      });
+  function compileAliasType(field: AliasField, schema: ResolvedSchema): string {
+    const relatedType = compileRelationType(field.relation, schema);
 
-      const fieldTypes = field.relatedCollections
-        .map(({ collection, field }) => {
-          const relatedField = schema[collection]!.fields[field]!;
-
-          if ("primitive" in relatedField) {
-            return compileFieldType(relatedField.primitive, schema);
-          } else {
-            return compileFieldType(relatedField, schema);
-          }
-        })
-        .reduce((unique, type) => unique.add(type), new Set<string>());
-
-      return `${Array.from(fieldTypes).join(" | ")} | ${collectionTypeNames.join(" | ")}`;
-    }
-
-    if (field.kind === "m2a-discriminator") {
-      return `${compileFieldType(field.primitive, schema)} | ${field.relatedCollections.map((c) => `"${c.collection}"`).join(" | ")}`;
-    }
-
-    // Below must be M2O or O2M
-
-    const relatedCollection = schema[field.relatedCollection]!;
-    const collectionName = toTypeName(relatedCollection.name);
-    if (relatedCollection.system) {
-      if (field.kind === "m2o") {
-        return `${collectionName}['${field.relatedField}'] | ${collectionName}<${schemaTypeName}>`;
-      } /* o2m */ else {
-        return `${collectionName}['${field.relatedField}'][] | ${collectionName}<${schemaTypeName}>[]`;
-      }
-    } else {
-      const relatedField = relatedCollection!.fields[field.relatedField]!;
-      if (relatedField == null) {
+    if (field.relation.kind === "m2o" || field.relation.kind === "o2m") {
+      const { relatedCollection, relatedField } = field.relation;
+      const foreignField = schema[relatedCollection]!.fields[relatedField]!;
+      if (foreignField.kind !== "primitive") {
         return "unknown";
       }
 
-      const fieldType = compileFieldType(
-        "primitive" in relatedField ? relatedField.primitive : relatedField,
-        schema
-      );
-
-      if (field.kind === "m2o") {
-        return `${fieldType} | ${collectionName}`;
-      } /* o2m */ else {
-        return `${fieldType}[] | ${collectionName}[]`;
-      }
+      return `${compileDataType(foreignField.type)}${field.relation.kind === "o2m" ? "[]" : ""} | ${relatedType}`;
     }
+
+    return "unknown";
   }
 
-  function compilePrimitiveType(field: PrimitiveField): string {
-    switch (field.type) {
+  function compileDataType(type: string): string {
+    switch (type) {
       case "string":
       case "text":
       case "uuid":
@@ -216,16 +188,53 @@ ${Object.entries(collection.fields)
     }
   }
 
+  function compileRelationType(
+    relation: M2ORelation | O2MRelation | M2ARelation | M2ADiscriminatorRelation,
+    schema: ResolvedSchema
+  ): string {
+    if (relation.kind === "m2a") {
+      const collectionTypeNames = relation.relatedCollections.map(({ collection }) => {
+        const relatedCollection = schema[collection]!;
+        if (relatedCollection.system) {
+          return toTypeName(relatedCollection.name) + `<${schemaTypeName}>`;
+        } else {
+          return toTypeName(relatedCollection.name);
+        }
+      });
+      return collectionTypeNames.join(" | ");
+    }
+
+    if (relation.kind === "m2a-discriminator") {
+      return relation.relatedCollections.map((name) => `"${name}"`).join(" | ");
+    }
+
+    // Below must be M2O or O2M
+
+    const relatedCollection = schema[relation.relatedCollection]!;
+    const collectionName = toTypeName(relatedCollection.name);
+
+    if (relatedCollection.system) {
+      if (relation.kind === "m2o") {
+        return `${collectionName}<${schemaTypeName}>`;
+      } /* o2m */ else {
+        return `${collectionName}<${schemaTypeName}>[]`;
+      }
+    }
+
+    if (relation.kind === "m2o") {
+      return collectionName;
+    } /* o2m */ else {
+      return `${collectionName}[]`;
+    }
+  }
+
   function compileStructuredType(field: StructuredField): string {
     switch (field.type) {
       case "list":
         return (
           "Array<{ " +
           field.fields
-            .map(
-              ({ name, type }) =>
-                `${quoteSpecial(name)}: ${compilePrimitiveType({ type } as PrimitiveField)}`
-            )
+            .map(({ name, type }) => `${quoteSpecial(name)}: ${compileDataType(type)}`)
             .join("; ") +
           " }>"
         );
@@ -241,7 +250,7 @@ ${Object.entries(collection.fields)
       case "select-multiple-checkbox-tree":
         return "Array<" + field.choices.flatMap(({ value }) => `"${value}"`).join(" | ") + ">";
       case "select-dropdown": {
-        const type = compilePrimitiveType({ type: field.fieldType } as PrimitiveField);
+        const type = compileDataType(field.fieldType);
         return field.choices
           .map(({ value }) => (type === "string" ? `"${value}"` : `${value}`))
           .concat(field.allowOther ? [type] : [])
@@ -257,7 +266,7 @@ ${Object.entries(collection.fields)
           ">"
         );
       case "select-radio": {
-        const type = compilePrimitiveType({ type: field.fieldType } as PrimitiveField);
+        const type = compileDataType(field.fieldType);
         return field.choices
           .map(({ value }) => (type === "string" ? `"${value}"` : `${value}`))
           .join(" | ");
@@ -286,7 +295,7 @@ ${Object.entries(collection.fields)
       name
         .replace(/-\s/g, "_") // remove invalid characters
         .split("_")
-        .map((word) => word.toLowerCase().endsWith("data") ? word : pluralize.singular(word)) // use singular for types (except for 'data')
+        .map((word) => (word.toLowerCase().endsWith("data") ? word : pluralize.singular(word))) // use singular for types (except for 'data')
         .map((word) => word.slice(0, 1).toLocaleUpperCase() + word.slice(1)) // pascalize
         .join("")
     );

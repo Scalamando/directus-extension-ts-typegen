@@ -12,7 +12,7 @@ export interface CustomDirectusUser {
 
 export interface Author {
   id: number;
-  user: DirectusUser['id'] | DirectusUser<Schema> | null;
+  user: string | DirectusUser<Schema> | null;
 }
 
 // GeoJSON Types
