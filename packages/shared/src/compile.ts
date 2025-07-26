@@ -286,7 +286,7 @@ ${Object.entries(collection.fields)
       name
         .replace(/-\s/g, "_") // remove invalid characters
         .split("_")
-        .map((word) => pluralize.singular(word)) // use singular for types
+        .map((word) => word.toLowerCase().endsWith("data") ? word : pluralize.singular(word)) // use singular for types (except for 'data')
         .map((word) => word.slice(0, 1).toLocaleUpperCase() + word.slice(1)) // pascalize
         .join("")
     );
