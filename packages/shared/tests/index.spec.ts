@@ -25,3 +25,8 @@ test("generates m2a collection types", async () => {
   const schema = await import("./snapshots/m2a.input.json");
   await expect(generateTypes(schema)).toMatchFileSnapshot("./snapshots/m2a.output.ts");
 });
+
+test("generates system collection types", async () => {
+  const schema = await import("./snapshots/system.input.json");
+  await expect(generateTypes(schema)).toMatchFileSnapshot("./snapshots/system.output.ts");
+});

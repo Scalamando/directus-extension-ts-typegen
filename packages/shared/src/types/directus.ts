@@ -19,6 +19,7 @@ export interface DirectusField {
   } | null;
   meta: {
     required: boolean;
+    system?: boolean;
   } & (
     | DirectusFieldMeta
     | DirectusFieldListMeta

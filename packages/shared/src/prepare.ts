@@ -29,6 +29,7 @@ export interface Field {
   required: boolean;
   interface: FieldInterface | null;
   relation: Relation | null;
+  system: boolean;
 }
 
 export type FieldInterface =
@@ -120,6 +121,7 @@ export function prepareSchema(
             } as FieldInterface)
           : null,
       relation: null,
+      system: field.meta?.system || false,
     } satisfies Field;
 
     schema[field.collection]!.fields[field.field] = newField;
