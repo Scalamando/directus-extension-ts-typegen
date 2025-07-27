@@ -1,6 +1,6 @@
 {
   "name": "directus-ts-typegen",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "A CLI to generate TypeScript types for your directus schema.",
   "keywords": [
     "directus",

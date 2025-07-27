@@ -1,5 +1,15 @@
 # @directus-ts-typegen/shared
 
+## 0.3.0
+
+### Minor Changes
+
+- 00907fd: generate system collections for sdk consumption
+- ab17499: fix: types for m2a collections
+- 70f4db3: fix: don't singularize singleton collection names
+- 07f4d43: fix: don't singularize 'data' to 'datum'
+- 1386e10: fix: don't include folders in the generated types
+
 ## 0.2.1
 
 ### Patch Changes
