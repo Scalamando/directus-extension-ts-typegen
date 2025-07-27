@@ -1,45 +1,81 @@
 {
   "collections": [
     {
-      "collection": "test",
+      "collection": "settings",
       "meta": {
-        "singleton": true 
+        "collection": "settings",
+        "icon": null,
+        "note": null,
+        "display_template": null,
+        "hidden": false,
+        "singleton": true,
+        "translations": null,
+        "archive_field": null,
+        "archive_app_filter": true,
+        "archive_value": null,
+        "unarchive_value": null,
+        "sort_field": null,
+        "accountability": "all",
+        "color": null,
+        "item_duplication_fields": null,
+        "sort": 9,
+        "group": null,
+        "collapse": "open",
+        "preview_url": null,
+        "versioning": false
+      },
+      "schema": {
+        "schema": "public",
+        "name": "settings",
+        "comment": null
       }
     }
   ],
   "fields": [
     {
-      "collection": "test",
+      "collection": "settings",
       "field": "id",
       "type": "integer",
       "schema": {
+        "name": "id",
+        "table": "settings",
         "data_type": "integer",
+        "default_value": "nextval('settings_id_seq'::regclass)",
+        "generation_expression": null,
+        "max_length": null,
+        "numeric_precision": 32,
+        "numeric_scale": 0,
+        "is_generated": false,
         "is_nullable": false,
+        "is_unique": true,
+        "is_indexed": false,
         "is_primary_key": true,
+        "has_auto_increment": true,
+        "foreign_key_schema": null,
         "foreign_key_table": null,
-        "foreign_key_column": null
+        "foreign_key_column": null,
+        "comment": null
       },
       "meta": {
+        "id": 8,
+        "collection": "settings",
+        "field": "id",
+        "special": null,
         "interface": "input",
         "options": null,
-        "required": false
-      }
-    },
-    {
-      "collection": "test",
-      "field": "test",
-      "type": "text",
-      "schema": {
-        "data_type": "text",
-        "is_nullable": true,
-        "is_primary_key": false,
-        "foreign_key_table": null,
-        "foreign_key_column": null
-      },
-      "meta": {
-        "interface": "input-code",
-        "options": null,
-        "required": true
+        "display": null,
+        "display_options": null,
+        "readonly": true,
+        "hidden": true,
+        "sort": 1,
+        "width": "full",
+        "translations": null,
+        "note": null,
+        "conditions": null,
+        "required": false,
+        "group": null,
+        "validation": null,
+        "validation_message": null
       }
     }
   ],

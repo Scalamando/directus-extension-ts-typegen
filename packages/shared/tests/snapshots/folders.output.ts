@@ -1,9 +1,10 @@
 export interface Schema {
-  settings: Settings;
+  customer: Customer[];
 }
 
-export interface Settings {
+export interface Customer {
   id: number;
+  fullname: string | null;
 }
 
 // GeoJSON Types
