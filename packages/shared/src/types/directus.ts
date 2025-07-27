@@ -4,6 +4,10 @@ export interface DirectusCollection {
     singleton: boolean;
     system?: boolean;
   } | null;
+  schema: {
+    name: string;
+    schema: string;
+  } | null;
 }
 
 export interface DirectusField {

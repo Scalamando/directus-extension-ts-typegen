@@ -16,6 +16,11 @@ test("generates singleton collection types", async () => {
   await expect(generateTypes(schema)).toMatchFileSnapshot("./snapshots/singleton.output.ts");
 });
 
+test("skips folders for generation", async () => {
+  const schema = await import("./snapshots/folders.input.json");
+  await expect(generateTypes(schema)).toMatchFileSnapshot("./snapshots/folders.output.ts");
+});
+
 test("generates m2o/o2m collection types", async () => {
   const schema = await import("./snapshots/m2o_o2m.input.json");
   await expect(generateTypes(schema)).toMatchFileSnapshot("./snapshots/m2o_o2m.output.ts");
