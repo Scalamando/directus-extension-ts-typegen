@@ -102,7 +102,7 @@ export function compileTypes(schema: ResolvedSchema, opts: CompileTypesOptions =
       "Schema",
       nonEmptyCollections.map((collection) => ({
         name: collection.name,
-        type: `${(collection.system ? systemCollectionPrefix : "") + toTypeName(collection.name)}${
+        type: `${(collection.system ? systemCollectionPrefix : "") + toTypeName(collection)}${
           collection.singleton || collection.system ? "" : "[]"
         }`,
       }))
@@ -111,7 +111,7 @@ export function compileTypes(schema: ResolvedSchema, opts: CompileTypesOptions =
 
   function compileCollectionType(collection: CollectionType, schema: ResolvedSchema) {
     return collectionTempl(
-      (collection.system ? systemCollectionPrefix : "") + toTypeName(collection.name),
+      (collection.system ? systemCollectionPrefix : "") + toTypeName(collection),
       Object.entries(collection.fields).map(([name, field]) => ({
         name,
         type: `${
@@ -196,9 +196,9 @@ export function compileTypes(schema: ResolvedSchema, opts: CompileTypesOptions =
       const collectionTypeNames = relation.relatedCollections.map(({ collection }) => {
         const relatedCollection = schema[collection]!;
         if (relatedCollection.system) {
-          return toTypeName(relatedCollection.name) + `<${schemaTypeName}>`;
+          return toTypeName(relatedCollection) + `<${schemaTypeName}>`;
         } else {
-          return toTypeName(relatedCollection.name);
+          return toTypeName(relatedCollection);
         }
       });
       return collectionTypeNames.join(" | ");
@@ -211,7 +211,7 @@ export function compileTypes(schema: ResolvedSchema, opts: CompileTypesOptions =
     // Below must be M2O or O2M
 
     const relatedCollection = schema[relation.relatedCollection]!;
-    const collectionName = toTypeName(relatedCollection.name);
+    const collectionName = toTypeName(relatedCollection);
 
     if (relatedCollection.system) {
       if (relation.kind === "m2o") {
@@ -285,17 +285,21 @@ export function compileTypes(schema: ResolvedSchema, opts: CompileTypesOptions =
     }
   }
 
-  function toTypeName(name: string) {
-    if (name in collectionToType) {
-      return collectionToType[name as SystemCollectionName];
+  function toTypeName(collection: { name: string; singleton: boolean }) {
+    if (collection.name in collectionToType) {
+      return collectionToType[collection.name as SystemCollectionName];
     }
 
     return (
       (typePrefix ?? "") +
-      name
+      collection.name
         .replace(/-\s/g, "_") // remove invalid characters
         .split("_")
-        .map((word) => (word.toLowerCase().endsWith("data") ? word : pluralize.singular(word))) // use singular for types (except for 'data')
+        .map((word) =>
+          collection.singleton || word.toLowerCase().endsWith("data")
+            ? word
+            : pluralize.singular(word)
+        ) // use singular for types (except for singletons and 'data')
         .map((word) => word.slice(0, 1).toLocaleUpperCase() + word.slice(1)) // pascalize
         .join("")
     );
