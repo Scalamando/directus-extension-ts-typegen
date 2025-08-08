@@ -61,7 +61,7 @@ const { copy, copied } = useClipboard({ source: formattedCode });
   </div>
 </template>
 
-<style>
+<style scoped>
 .container {
   position: relative;
   overflow: hidden;
@@ -87,9 +87,10 @@ const { copy, copied } = useClipboard({ source: formattedCode });
   overflow: auto;
   height: 100%;
 }
+</style>
 
+<style>
 /* Shiki */
-
 body.dark .shiki,
 body.dark .shiki span {
   color: var(--shiki-dark) !important;
