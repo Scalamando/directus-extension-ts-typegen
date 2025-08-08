@@ -1,5 +1,11 @@
 # directus-extension-ts-typegen
 
+## 0.3.1
+
+### Patch Changes
+
+- 43f5fb6: fix global style leakage that prevented flows from sidescrolling
+
 ## 0.3.0
 
 ### Minor Changes
