@@ -16,7 +16,7 @@ export interface Test {
   date: string | null;
   time: string | null;
   timestamp: string | null;
-  repeater: Array<{ field: string }> | null;
+  repeater: Array<{ field: string; json: Array<{ innner_key: string }> | null }> | null;
   point: GeoJSONPoint | null;
   line_string: GeoJSONLineString | null;
   polygon: GeoJSONPolygon | null;

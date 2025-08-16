@@ -234,7 +234,14 @@ export function compileTypes(schema: ResolvedSchema, opts: CompileTypesOptions =
         return (
           "Array<{ " +
           field.fields
-            .map(({ name, type }) => `${quoteSpecial(name)}: ${compileDataType(type)}`)
+            .map(
+              ({ name, type }) =>
+                `${quoteSpecial(name)}: ${
+                  typeof type === "string"
+                    ? compileDataType(type)
+                    : `${compileStructuredType(type)}${type.nullable ? " | null" : ""}`
+                }`
+            )
             .join("; ") +
           " }>"
         );

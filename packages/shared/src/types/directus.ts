@@ -40,14 +40,23 @@ export interface DirectusFieldMeta {
   options: unknown | null;
 }
 
+export interface DirectusFieldListField {
+  field: string;
+  name: string;
+  type: string;
+  meta: { field: string; type: string; required?: boolean } & (
+    | DirectusFieldListMeta
+    | DirectusFieldDropdownMeta
+    | DirectusFieldMultipleCheckboxMeta
+    | DirectusFieldMultipleDropdownMeta
+    | DirectusFieldTagsMeta
+    | DirectusFieldTreeMeta
+  );
+}
 export interface DirectusFieldListMeta {
   interface: "list";
   options: {
-    fields: Array<{
-      field: string;
-      name: string;
-      type: string;
-    }>;
+    fields: Array<DirectusFieldListField>;
   };
 }
 

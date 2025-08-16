@@ -671,6 +671,30 @@
                 "type": "string",
                 "interface": "input"
               }
+            },
+            {
+              "field": "json",
+              "name": "json",
+              "type": "json",
+              "meta": {
+                "field": "json",
+                "type": "json",
+                "interface": "list",
+                "options": {
+                  "fields": [
+                    {
+                      "field": "innner_key",
+                      "name": "innner_key",
+                      "type": "string",
+                      "meta": {
+                        "field": "innner_key",
+                        "type": "string",
+                        "interface": null
+                      }
+                    }
+                  ]
+                }
+              }
             }
           ]
         },
