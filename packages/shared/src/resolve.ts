@@ -1,5 +1,5 @@
-import { type Field, PRIMARY_KEY, type Schema } from "./prepare.ts";
-import { type DirectusFieldTreeChoice } from "./types/directus.ts";
+import { type Field, type FieldInterface, PRIMARY_KEY, type Schema } from "./prepare.ts";
+import { type DirectusFieldListField, type DirectusFieldTreeChoice } from "./types/directus.ts";
 
 export type ResolvedSchema = Record<string, CollectionType>;
 export type CollectionType = {
@@ -45,6 +45,8 @@ export type M2ADiscriminatorRelation = {
   relatedCollections: Array<string>;
 };
 
+export type ListField = { name: string; type: string | StructuredField };
+
 export type StructuredField = {
   kind: "structured";
   name: string;
@@ -57,7 +59,7 @@ export type StructuredField = {
     }
   | {
       type: "list";
-      fields: Array<{ name: string; type: string }>;
+      fields: Array<ListField>;
     }
   | {
       type: "select-multiple-checkbox";
@@ -162,7 +164,7 @@ function resolveRelation(
   schema: Schema
 ): M2ORelation | O2MRelation | M2ARelation | M2ADiscriminatorRelation | null {
   const relation = field.relation;
-  if(relation == null) return null;
+  if (relation == null) return null;
 
   // M2O Relation
   if (
@@ -246,15 +248,37 @@ function resolveStructuredType(
   { requiredNotNullable }: ResolveStructuredTypeOptions = {}
 ): StructuredField {
   switch (field.interface?.name) {
-    case "list":
+    case "list": {
+      const listFieldToField = (listField: DirectusFieldListField): Field => ({
+        collection: field.collection,
+        dataType: listField.type,
+        name: listField.name,
+        interface: {
+          name: listField.meta.interface,
+          options: listField.meta.options,
+        } as FieldInterface, // TypeScript breaks down here...
+        nullable: !(listField.meta.required ?? false),
+        primaryKey: null,
+        relation: null,
+        system: false,
+        type: listField.type,
+        required: listField.meta.required ?? false,
+      });
+      const resolveChildren = (listField: DirectusFieldListField): ListField => ({
+        name: listField.name,
+        type: ["json", "csv"].includes(listField.type)
+          ? resolveStructuredType(listFieldToField(listField), { requiredNotNullable })
+          : listField.type,
+      });
       return {
         kind: "structured",
         name: field.name,
         nullable: isNullable(field, requiredNotNullable),
         type: "list",
-        fields: field.interface.options.fields,
+        fields: field.interface.options.fields.map(resolveChildren),
         system: field.system,
       };
+    }
     case "select-multiple-checkbox":
       return {
         kind: "structured",
@@ -265,7 +289,7 @@ function resolveStructuredType(
         allowOther: field.interface.options.allowOther || false,
         system: field.system,
       };
-    case "select-multiple-checkbox-tree":
+    case "select-multiple-checkbox-tree": {
       const recurseChildren = (choice: DirectusFieldTreeChoice): Array<{ value: string }> => [
         { value: choice.value },
         ...(choice.children?.flatMap(recurseChildren) ?? []),
@@ -278,6 +302,7 @@ function resolveStructuredType(
         choices: field.interface.options.choices.flatMap(recurseChildren),
         system: field.system,
       };
+    }
     case "select-dropdown":
       return {
         kind: "structured",
