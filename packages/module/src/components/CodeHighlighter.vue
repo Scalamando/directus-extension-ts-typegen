@@ -106,6 +106,9 @@ body.dark .shiki span {
   overflow-x: auto;
   * {
     user-select: text;
+    -moz-user-select: text;
+    -webkit-user-select: text;
+    -ms-user-select: text;
   }
 }
 </style>
