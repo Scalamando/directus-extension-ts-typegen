@@ -1,5 +1,11 @@
 # @directus-ts-typegen/shared
 
+## 0.4.0
+
+### Minor Changes
+
+- af14020: feat: resolve nested fields in repeater (list) interfaces
+
 ## 0.3.0
 
 ### Minor Changes

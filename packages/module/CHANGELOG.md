@@ -1,5 +1,15 @@
 # directus-extension-ts-typegen
 
+## 0.4.0
+
+### Minor Changes
+
+- af14020: feat: resolve nested fields in repeater (list) interfaces
+
+### Patch Changes
+
+- 6c0eaea: Fix code selection for safari and firefox
+
 ## 0.3.1
 
 ### Patch Changes
