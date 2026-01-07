@@ -6,8 +6,11 @@ on:
       - main
 
 permissions:
+  # Used for trusted publishing to npm via OIDC
   id-token: write
+  # Used for changeset action
   contents: write
+  pull-requests: write
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -31,6 +34,9 @@ jobs:
           node-version: 20.x
           registry-url: 'https://registry.npmjs.org/'
           cache: 'pnpm'
+
+      - name: Update npm for trusted publishing
+        run: npm install -g npm@'>=11.5.1'
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
