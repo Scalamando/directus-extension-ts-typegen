@@ -1,6 +1,6 @@
 {
   "name": "directus-extension-ts-typegen",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "A directus extension to generate TypeScript types for your schema.",
   "keywords": [
     "directus",
