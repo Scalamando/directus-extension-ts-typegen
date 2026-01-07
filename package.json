@@ -4,7 +4,7 @@
   "description": "A directus extension and cli to generate TypeScript types for your directus schema.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Scalamando/directus-ts-typegen"
+    "url": "https://github.com/Scalamando/directus-extension-ts-typegen"
   },
   "license": "MIT",
   "author": "Raimund Canzler <git@rai-canzler.de>",
