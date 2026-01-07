@@ -45,7 +45,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ''
+        permissions:
+          contents: write
 
       - name: Push Git Tag after Publish
         if: steps.changesets.outputs.published == 'true'
         run: git push --follow-tags
+        permissions:
+          contents: write
