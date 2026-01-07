@@ -157,11 +157,12 @@ export function compileTypes(schema: ResolvedSchema, opts: CompileTypesOptions =
       case "text":
       case "uuid":
       case "hash":
+        return "string";
       case "date":
       case "time":
       case "dateTime":
       case "timestamp":
-        return "string";
+        return "\"datetime\"";
       case "integer":
       case "bigInteger":
       case "float":
