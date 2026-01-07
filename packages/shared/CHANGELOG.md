@@ -1,5 +1,11 @@
 # @directus-ts-typegen/shared
 
+## 0.5.0
+
+### Minor Changes
+
+- fb7c7a5: Fix sdk typings for datetime-like fields, by compiling them as the literal 'datetime'
+
 ## 0.4.0
 
 ### Minor Changes
