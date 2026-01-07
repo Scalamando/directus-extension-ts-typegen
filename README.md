@@ -2,9 +2,40 @@
 
 A suite of tools to automatically generates TypeScript types for your Directus schema, making it easier to work with your Directus data in a type-safe manner.
 
-This suite features support for O2M, M2O, M2M and M2A relations.
+This suite features support for O2M, M2O, M2M and M2A relations, JSON fields used by dropdowns/selects/etc., and GeoJSON fields.
 
 ![preview](https://github.com/user-attachments/assets/6a24c17a-9d27-495d-aa95-93de33cdbf2f)
+
+## Usage
+
+### Directus module (GUI)
+
+1. Install the extension (Marketplace or via npm in your Directus setup).
+2. Enable the TS Typegen module under Settings -> Modules.
+3. Open the module from the sidebar, adjust options, and copy the generated types.
+4. Paste the types into your project and use them with the Directus SDK.
+
+### CLI
+
+Run interactively:
+
+```bash
+npx directus-ts-typegen
+```
+
+Or provide credentials and output explicitly:
+
+```bash
+npx directus-ts-typegen \
+  --directus-host https://your-directus.com \
+  --directus-email admin@example.com \
+  --directus-password yourpassword \
+  --directus-output ./types/directus.ts
+```
+
+The CLI also supports static tokens for CI via `--directus-token` and the
+matching `DIRECTUS_TS_TYPEGEN_*` environment variables. See the
+[package readme](/packages/cli/README.md) for the full option list.
 
 ## Packages
 
