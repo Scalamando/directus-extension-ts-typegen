@@ -14,6 +14,7 @@
     "test": "turbo test",
     "test:dev": "turbo test:dev",
     "format": "prettier . --write '!./data'",
+    "format:check": "prettier . --check '!./data'",
     "ci:publish": "turbo run build test && changeset publish"
   },
   "devDependencies": {
