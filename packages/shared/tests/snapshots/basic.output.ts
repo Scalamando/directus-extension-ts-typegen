@@ -12,10 +12,10 @@ export interface Test {
   decimal: number | null;
   text: string | null;
   boolean: boolean | null;
-  date_time: string | null;
-  date: string | null;
-  time: string | null;
-  timestamp: string | null;
+  date_time: "datetime" | null;
+  date: "datetime" | null;
+  time: "datetime" | null;
+  timestamp: "datetime" | null;
   repeater: Array<{ field: string; json: Array<{ innner_key: string }> | null }> | null;
   point: GeoJSONPoint | null;
   line_string: GeoJSONLineString | null;

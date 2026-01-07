@@ -7,8 +7,8 @@ export interface Schema {
 
 export interface Post {
   id: number;
-  date_created: string | null;
-  date_updated: string | null;
+  date_created: "datetime" | null;
+  date_updated: "datetime" | null;
   content: number[] | PostContent[];
 }
 
