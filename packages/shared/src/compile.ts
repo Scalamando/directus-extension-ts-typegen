@@ -300,8 +300,7 @@ export function compileTypes(schema: ResolvedSchema, opts: CompileTypesOptions =
 
     return (
       (typePrefix ?? "") +
-      collection.name
-        .replace(/-\s/g, "_") // remove invalid characters
+      sanitizeTypeName(collection.name)
         .split("_")
         .map((word) =>
           collection.singleton || word.toLowerCase().endsWith("data")
@@ -320,6 +319,10 @@ export function compileTypes(schema: ResolvedSchema, opts: CompileTypesOptions =
       return name;
     }
   }
+}
+
+function sanitizeTypeName(name: string) {
+  return name.replace(/[^A-Za-z0-9_]/g, "_");
 }
 
 const fieldTempl = (name: string, type: string) => `  ${name}: ${type};`;
