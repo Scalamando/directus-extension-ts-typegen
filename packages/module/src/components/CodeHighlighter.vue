@@ -65,6 +65,8 @@ const { copy, copied } = useClipboard({ source: formattedCode });
 .container {
   position: relative;
   overflow: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr;
 }
 
 .toolbar {
@@ -85,7 +87,6 @@ const { copy, copied } = useClipboard({ source: formattedCode });
 
 .content {
   overflow: auto;
-  height: 100%;
 }
 </style>
 
