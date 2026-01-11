@@ -4,7 +4,7 @@ A suite of tools to automatically generates TypeScript types for your Directus s
 
 This suite features support for O2M, M2O, M2M and M2A relations, JSON fields used by dropdowns/selects/etc., and GeoJSON fields.
 
-![preview](https://github.com/user-attachments/assets/6a24c17a-9d27-495d-aa95-93de33cdbf2f)
+<img width="1662" height="1034" alt="Directus TS Typegen interface showcasing the features" src="https://github.com/user-attachments/assets/8066a5bc-ce7e-4926-93e5-f09e0f626274" />
 
 ## Usage
 
