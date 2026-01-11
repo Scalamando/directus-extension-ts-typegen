@@ -110,6 +110,19 @@ const types = computed(() =>
     }
   }
 }
+
+@media screen and (max-width: 1024px) {
+  #ts-typegen {
+    #main-content {
+      > .header-bar {
+        min-width: 0;
+      }
+      > .content-wrapper {
+        overflow: auto;
+      }
+    }
+  }
+}
 </style>
 
 <style scoped>
@@ -165,8 +178,12 @@ const types = computed(() =>
 }
 
 @media screen and (max-width: 1024px) {
+  .page {
+    flex-direction: column;
+    height: unset;
+  }
   .page .options {
-    flex-direction: row;
+    flex-direction: column;
   }
 }
 </style>
