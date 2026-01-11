@@ -42,6 +42,7 @@ export type SystemCollectionName = keyof typeof collectionToType;
 export interface CompileTypesOptions {
   typePrefix?: string;
   typeSuffix?: string;
+  typeStyle?: "interface" | "type";
   schemaTypeName?: string;
   systemCollectionPrefix?: string;
 }
@@ -49,6 +50,7 @@ export function compileTypes(schema: ResolvedSchema, opts: CompileTypesOptions =
   const {
     typePrefix = "",
     typeSuffix = "",
+    typeStyle = "interface",
     schemaTypeName = DEFAULT_SCHEMA_TYPE_NAME,
     systemCollectionPrefix = DEFAULT_SYSTEM_COLLECTION_PREFIX,
   } = opts;
@@ -67,7 +69,7 @@ export function compileTypes(schema: ResolvedSchema, opts: CompileTypesOptions =
     typeString += "\n\n";
   }
 
-  typeString += GeoJSONTypes;
+  typeString += geoJSONTypes({ typeStyle });
   return typeString;
 
   function compileReferencedSystemCollections() {
@@ -107,7 +109,8 @@ export function compileTypes(schema: ResolvedSchema, opts: CompileTypesOptions =
         type: `${(collection.system ? systemCollectionPrefix : "") + toTypeName(collection)}${
           collection.singleton || collection.system ? "" : "[]"
         }`,
-      }))
+      })),
+      { typeStyle }
     );
   }
 
@@ -123,7 +126,8 @@ export function compileTypes(schema: ResolvedSchema, opts: CompileTypesOptions =
               ? compileAliasType(field, schema)
               : compilePrimitiveType(field, schema)
         }${"nullable" in field && field.nullable ? " | null" : ""}`,
-      }))
+      })),
+      { typeStyle }
     );
   }
 
@@ -330,44 +334,61 @@ function sanitizeTypeName(name: string) {
 
 const fieldTempl = (name: string, type: string) => `  ${name}: ${type};`;
 
-const collectionTempl = (name: string, fields: Array<{ name: string; type: string }>) =>
-  `export interface ${name} {
+const collectionTempl = (
+  name: string,
+  fields: Array<{ name: string; type: string }>,
+  opts?: { typeStyle?: "interface" | "type" }
+) =>
+  (opts?.typeStyle === "type" ? `export type ${name} =` : `export interface ${name}`) +
+  ` {
 ${fields.map(({ name, type }) => fieldTempl(name, type)).join("\n")}
 }`;
 
-const GeoJSONTypes = `// GeoJSON Types
+const geoJSONTypes = (opts?: { typeStyle?: "interface" | "type" }) => `// GeoJSON Types
 
-export interface GeoJSONPoint {
+${opts?.typeStyle === "type" ? "export type GeoJSONPoint =" : "export interface GeoJSONPoint"} {
   type: "Point";
   coordinates: [number, number];
 }
 
-export interface GeoJSONLineString {
+${opts?.typeStyle === "type" ? "export type GeoJSONLineString =" : "export interface GeoJSONLineString"} {
   type: "LineString";
   coordinates: Array<[number, number]>;
 }
 
-export interface GeoJSONPolygon {
+${opts?.typeStyle === "type" ? "export type GeoJSONPolygon =" : "export interface GeoJSONPolygon"} {
   type: "Polygon";
   coordinates: Array<Array<[number, number]>>;
 }
 
-export interface GeoJSONMultiPoint {
+${opts?.typeStyle === "type" ? "export type GeoJSONMultiPoint =" : "export interface GeoJSONMultiPoint"} {
   type: "MultiPoint";
   coordinates: Array<[number, number]>;
 }
 
-export interface GeoJSONMultiLineString {
+${
+  opts?.typeStyle === "type"
+    ? "export type GeoJSONMultiLineString ="
+    : "export interface GeoJSONMultiLineString"
+} {
   type: "MultiLineString";
   coordinates: Array<Array<[number, number]>>;
 }
 
-export interface GeoJSONMultiPolygon {
+${
+  opts?.typeStyle === "type"
+    ? "export type GeoJSONMultiPolygon ="
+    : "export interface GeoJSONMultiPolygon"
+} {
   type: "MultiPolygon";
   coordinates: Array<Array<Array<[number, number]>>>;
 }
 
-export interface GeoJSONGeometryCollection {
+${
+  opts?.typeStyle === "type"
+    ? "export type GeoJSONGeometryCollection ="
+    : "export interface GeoJSONGeometryCollection"
+} {
   type: "GeometryCollection";
   geometries: Array<
     | GeoJSONPoint
@@ -377,5 +398,4 @@ export interface GeoJSONGeometryCollection {
     | GeoJSONMultiLineString
     | GeoJSONMultiPolygon
   >;
-}
-`;
+}\n`;

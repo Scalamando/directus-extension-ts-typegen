@@ -59,6 +59,7 @@ npx directus-ts-typegen [options]
 - **`--required-not-nullable`**: Treat required fields as non-nullable (omit `null` from their types)
 - **`--type-prefix`**: Prefix to prepend to generated type names
 - **`--type-suffix`**: Suffix to append to generated type names
+- **`--type-style`**: Output style for type declarations (`interface` or `type`, default: `interface`)
 
 These options can also be set using environment variables:
 
