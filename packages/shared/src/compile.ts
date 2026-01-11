@@ -41,12 +41,14 @@ export type SystemCollectionName = keyof typeof collectionToType;
 
 export interface CompileTypesOptions {
   typePrefix?: string;
+  typeSuffix?: string;
   schemaTypeName?: string;
   systemCollectionPrefix?: string;
 }
 export function compileTypes(schema: ResolvedSchema, opts: CompileTypesOptions = {}) {
   const {
     typePrefix = "",
+    typeSuffix = "",
     schemaTypeName = DEFAULT_SCHEMA_TYPE_NAME,
     systemCollectionPrefix = DEFAULT_SYSTEM_COLLECTION_PREFIX,
   } = opts;
@@ -308,7 +310,8 @@ export function compileTypes(schema: ResolvedSchema, opts: CompileTypesOptions =
             : pluralize.singular(word)
         ) // use singular for types (except for singletons and 'data')
         .map((word) => word.slice(0, 1).toLocaleUpperCase() + word.slice(1)) // pascalize
-        .join("")
+        .join("") +
+      typeSuffix
     );
   }
 

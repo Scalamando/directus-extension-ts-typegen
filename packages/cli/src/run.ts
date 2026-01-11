@@ -55,6 +55,11 @@ yargs(hideBin(process.argv))
     description: "Prefix that's prepended to the generated types names",
     default: "",
   })
+  .option("type-suffix", {
+    type: "string",
+    description: "Suffix that's appended to the generated types names",
+    default: "",
+  })
   .command(
     ["$0", "generate"],
     "generate the types",
@@ -72,6 +77,7 @@ yargs(hideBin(process.argv))
 
         let requiredNotNullable = argv.requiredNotNullable;
         let typePrefix = argv.typePrefix;
+        let typeSuffix = argv.typeSuffix;
 
         logger.debug("Configuration values at startup:");
         logger.debug("directus-host:", host);
@@ -150,6 +156,7 @@ yargs(hideBin(process.argv))
         logger.debug("Type generation options:");
         logger.debug("required-not-nullable:", requiredNotNullable);
         logger.debug("type-prefix", typePrefix);
+        logger.debug("type-suffix", typeSuffix);
 
         // Authenticate with the directus instance
 
@@ -203,6 +210,7 @@ yargs(hideBin(process.argv))
           { collections, fields, relations },
           {
             typePrefix,
+            typeSuffix,
             requiredNotNullable,
           }
         );

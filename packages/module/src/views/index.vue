@@ -13,6 +13,7 @@ import CodeHighlighter from "../components/CodeHighlighter.vue";
 const api = useApi();
 
 const typePrefix = ref("");
+const typeSuffix = ref("");
 const requiredNotNullable = ref(false);
 
 const { state: collections, isLoading: isLoadingCollections } = useAsyncState(
@@ -38,6 +39,7 @@ const types = computed(() =>
         { collections: collections.value, fields: fields.value, relations: relations.value },
         {
           typePrefix: typePrefix.value,
+          typeSuffix: typeSuffix.value,
           requiredNotNullable: requiredNotNullable.value,
         }
       )
@@ -63,6 +65,9 @@ const types = computed(() =>
 
         <label for="type-prefix">Type Prefix</label>
         <v-input v-model="typePrefix" id="type-prefix" placeholder="Enter a type prefix..." trim />
+
+        <label for="type-suffix">Type Suffix</label>
+        <v-input v-model="typeSuffix" id="type-suffix" placeholder="Enter a type suffix..." trim />
       </div>
 
       <Suspense>
