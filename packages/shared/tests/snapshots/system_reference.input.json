@@ -1,0 +1,191 @@
+{
+  "collections": [
+    {
+      "collection": "directus_files",
+      "meta": {
+        "collection": "directus_files",
+        "hidden": false,
+        "singleton": false,
+        "system": true
+      },
+      "schema": { "schema": "public", "name": "directus_files", "comment": null }
+    },
+    {
+      "collection": "posts",
+      "meta": {
+        "collection": "posts",
+        "hidden": false,
+        "singleton": false,
+        "system": false
+      },
+      "schema": { "schema": "public", "name": "posts", "comment": null }
+    }
+  ],
+  "fields": [
+    {
+      "collection": "directus_files",
+      "field": "id",
+      "type": "uuid",
+      "schema": {
+        "name": "id",
+        "table": "directus_files",
+        "data_type": "uuid",
+        "default_value": null,
+        "generation_expression": null,
+        "max_length": null,
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "is_generated": false,
+        "is_nullable": false,
+        "is_unique": true,
+        "is_indexed": false,
+        "is_primary_key": true,
+        "has_auto_increment": false,
+        "foreign_key_schema": null,
+        "foreign_key_table": null,
+        "foreign_key_column": null,
+        "comment": null
+      },
+      "meta": {
+        "system": true,
+        "collection": "directus_files",
+        "field": "id",
+        "special": ["uuid"],
+        "interface": null,
+        "options": null,
+        "display": null,
+        "display_options": null,
+        "readonly": false,
+        "hidden": true,
+        "sort": 1,
+        "width": "half",
+        "group": null,
+        "translations": null,
+        "note": null,
+        "conditions": null,
+        "required": false
+      }
+    },
+    {
+      "collection": "posts",
+      "field": "id",
+      "type": "integer",
+      "schema": {
+        "name": "id",
+        "table": "posts",
+        "data_type": "integer",
+        "default_value": "nextval('posts_id_seq'::regclass)",
+        "generation_expression": null,
+        "max_length": null,
+        "numeric_precision": 32,
+        "numeric_scale": 0,
+        "is_generated": false,
+        "is_nullable": false,
+        "is_unique": true,
+        "is_indexed": false,
+        "is_primary_key": true,
+        "has_auto_increment": true,
+        "foreign_key_schema": null,
+        "foreign_key_table": null,
+        "foreign_key_column": null,
+        "comment": null
+      },
+      "meta": {
+        "id": 1,
+        "collection": "posts",
+        "field": "id",
+        "special": null,
+        "interface": "input",
+        "options": null,
+        "display": null,
+        "display_options": null,
+        "readonly": true,
+        "hidden": true,
+        "sort": 1,
+        "width": "full",
+        "translations": null,
+        "note": null,
+        "conditions": null,
+        "required": false,
+        "group": null,
+        "validation": null,
+        "validation_message": null
+      }
+    },
+    {
+      "collection": "posts",
+      "field": "file",
+      "type": "uuid",
+      "schema": {
+        "name": "file",
+        "table": "posts",
+        "data_type": "uuid",
+        "default_value": null,
+        "generation_expression": null,
+        "max_length": null,
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "is_generated": false,
+        "is_nullable": true,
+        "is_unique": false,
+        "is_indexed": false,
+        "is_primary_key": false,
+        "has_auto_increment": false,
+        "foreign_key_schema": "public",
+        "foreign_key_table": "directus_files",
+        "foreign_key_column": "id",
+        "comment": null
+      },
+      "meta": {
+        "id": 2,
+        "collection": "posts",
+        "field": "file",
+        "special": ["m2o"],
+        "interface": "select-dropdown-m2o",
+        "options": null,
+        "display": null,
+        "display_options": null,
+        "readonly": false,
+        "hidden": false,
+        "sort": 2,
+        "width": "full",
+        "translations": null,
+        "note": null,
+        "conditions": null,
+        "required": false,
+        "group": null,
+        "validation": null,
+        "validation_message": null
+      }
+    }
+  ],
+  "relations": [
+    {
+      "collection": "posts",
+      "field": "file",
+      "related_collection": "directus_files",
+      "schema": {
+        "constraint_name": "posts_file_foreign",
+        "table": "posts",
+        "column": "file",
+        "foreign_key_schema": "public",
+        "foreign_key_table": "directus_files",
+        "foreign_key_column": "id",
+        "on_update": "NO ACTION",
+        "on_delete": "SET NULL"
+      },
+      "meta": {
+        "id": 1,
+        "many_collection": "posts",
+        "many_field": "file",
+        "one_collection": "directus_files",
+        "one_field": null,
+        "one_collection_field": null,
+        "one_allowed_collections": null,
+        "junction_field": null,
+        "sort_field": null,
+        "one_deselect_action": "nullify"
+      }
+    }
+  ]
+}

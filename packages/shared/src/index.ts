@@ -13,6 +13,7 @@ export interface GenerateTypesOptions {
   typeSuffix?: string;
   typeStyle?: "interface" | "type";
   requiredNotNullable?: boolean;
+  includeSystemTypes?: boolean;
 }
 
 export function generateTypes(directusSchema: GenerateTypesInput, opts?: GenerateTypesOptions) {
@@ -22,6 +23,7 @@ export function generateTypes(directusSchema: GenerateTypesInput, opts?: Generat
     typePrefix: opts?.typePrefix,
     typeSuffix: opts?.typeSuffix,
     typeStyle: opts?.typeStyle,
+    includeSystemTypes: opts?.includeSystemTypes,
   });
   return typeString;
 }

@@ -42,6 +42,7 @@ The generated types will reflect your current Directus schema and can be used wi
 - **Type Prefix**: Prefix to prepend to generated type names
 - **Type Suffix**: Suffix to append to generated type names
 - **Type Style**: Output style for type declarations (`interface` or `type`, default: `interface`)
+- **Include Referenced System Collections**: Include referenced system collections in the schema (workaround for Directus SDK type resolution)
 
 ## Credits
 

@@ -60,6 +60,7 @@ npx directus-ts-typegen [options]
 - **`--type-prefix`**: Prefix to prepend to generated type names
 - **`--type-suffix`**: Suffix to append to generated type names
 - **`--type-style`**: Output style for type declarations (`interface` or `type`, default: `interface`)
+- **`--include-system-types`**: Include referenced system collections in the schema (workaround for Directus SDK type resolution)
 
 These options can also be set using environment variables:
 

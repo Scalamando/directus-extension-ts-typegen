@@ -19,6 +19,7 @@ const typePrefix = ref("");
 const typeSuffix = ref("");
 const typeStyle = ref<"interface" | "type">("interface");
 const requiredNotNullable = ref(false);
+const includeSystemTypes = ref(true);
 
 const { state: collections, isLoading: isLoadingCollections } = useAsyncState(
   () => api.get<{ data: DirectusCollection[] }>("/collections").then((res) => res.data.data),
@@ -46,6 +47,7 @@ const types = computed(() =>
           typeSuffix: typeSuffix.value,
           typeStyle: typeStyle.value,
           requiredNotNullable: requiredNotNullable.value,
+          includeSystemTypes: includeSystemTypes.value,
         }
       )
 );
@@ -120,6 +122,15 @@ const types = computed(() =>
           Treat required fields as non-nullable
         </v-checkbox>
         <small class="type-note">Omit <code>null</code> from required field types.</small>
+
+        <label for="include-system-types">Include Referenced System Collections</label>
+        <v-checkbox v-model="includeSystemTypes" id="include-system-types" block>
+          Include referenced system collection types in the schema
+        </v-checkbox>
+        <small class="type-note">
+          Workaround for a Directus SDK typing bug&mdash;referenced system collections must be
+          present in the schema for type resolution.
+        </small>
 
         <label for="type-prefix">Type Prefix</label>
         <v-input v-model="typePrefix" id="type-prefix" placeholder="Enter a type prefix..." trim />

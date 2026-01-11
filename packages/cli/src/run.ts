@@ -66,6 +66,12 @@ yargs(hideBin(process.argv))
     description: "Suffix that's appended to the generated types names",
     default: "",
   })
+  .option("include-system-types", {
+    type: "boolean",
+    description:
+      "Include referenced system collection types in the schema (SDK type resolution workaround)",
+    default: true,
+  })
   .command(
     ["$0", "generate"],
     "generate the types",
@@ -85,6 +91,7 @@ yargs(hideBin(process.argv))
         let typeStyle = argv.typeStyle as "interface" | "type";
         let typePrefix = argv.typePrefix;
         let typeSuffix = argv.typeSuffix;
+        let includeSystemTypes = argv.includeSystemTypes;
 
         logger.debug("Configuration values at startup:");
         logger.debug("directus-host:", host);
@@ -165,6 +172,7 @@ yargs(hideBin(process.argv))
         logger.debug("type-style", typeStyle);
         logger.debug("type-prefix", typePrefix);
         logger.debug("type-suffix", typeSuffix);
+        logger.debug("include-system-types", includeSystemTypes);
 
         // Authenticate with the directus instance
 
@@ -221,6 +229,7 @@ yargs(hideBin(process.argv))
             typeSuffix,
             typeStyle,
             requiredNotNullable,
+            includeSystemTypes,
           }
         );
         logger.debug(`Finished type generation.`);

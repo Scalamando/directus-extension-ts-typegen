@@ -45,6 +45,7 @@ export interface CompileTypesOptions {
   typeStyle?: "interface" | "type";
   schemaTypeName?: string;
   systemCollectionPrefix?: string;
+  includeSystemTypes?: boolean;
 }
 export function compileTypes(schema: ResolvedSchema, opts: CompileTypesOptions = {}) {
   const {
@@ -53,11 +54,14 @@ export function compileTypes(schema: ResolvedSchema, opts: CompileTypesOptions =
     typeStyle = "interface",
     schemaTypeName = DEFAULT_SCHEMA_TYPE_NAME,
     systemCollectionPrefix = DEFAULT_SYSTEM_COLLECTION_PREFIX,
+    includeSystemTypes = true,
   } = opts;
 
   let typeString = "";
 
-  typeString += compileReferencedSystemCollections();
+  const referencedSystemCollections = collectReferencedSystemCollections(schema);
+
+  typeString += compileReferencedSystemCollections(referencedSystemCollections);
 
   typeString += compileSchemaType(schema);
   typeString += "\n\n";
@@ -72,24 +76,9 @@ export function compileTypes(schema: ResolvedSchema, opts: CompileTypesOptions =
   typeString += geoJSONTypes({ typeStyle });
   return typeString;
 
-  function compileReferencedSystemCollections() {
-    const systemCollections = new Set<SystemCollectionName>();
-
-    for (const collectionName in schema) {
-      if (schema[collectionName]!.system) continue;
-
-      for (const fieldName in schema[collectionName]!.fields) {
-        const field = schema[collectionName]!.fields[fieldName]!;
-        if (
-          (field.kind === "primitive" || field.kind === "alias") &&
-          (field.relation?.kind === "m2o" || field.relation?.kind === "o2m") &&
-          schema[field.relation.relatedCollection]?.system
-        ) {
-          systemCollections.add(field.relation.relatedCollection as SystemCollectionName);
-        }
-      }
-    }
-
+  function compileReferencedSystemCollections(
+    systemCollections: Set<SystemCollectionName>
+  ): string {
     const collectionTypes = Array.from(systemCollections.values()).map((c) => collectionToType[c]);
     if (collectionTypes.length === 0) return "";
 
@@ -97,19 +86,30 @@ export function compileTypes(schema: ResolvedSchema, opts: CompileTypesOptions =
   }
 
   function compileSchemaType(schema: ResolvedSchema) {
-    const nonEmptyCollections = Object.values(schema).filter(
-      (collection) =>
-        !collection.system ||
-        Object.values(collection.fields).some((f) => "system" in f && !f.system)
-    );
+    const nonEmptyCollections = Object.values(schema).filter((collection) => {
+      if (!collection.system) return true;
+
+      const hasCustomFields = Object.keys(collection.fields).length > 0;
+      if (hasCustomFields) return true;
+
+      return includeSystemTypes
+        ? referencedSystemCollections.has(collection.name as SystemCollectionName)
+        : false;
+    });
+
     return collectionTempl(
       "Schema",
-      nonEmptyCollections.map((collection) => ({
-        name: collection.name,
-        type: `${(collection.system ? systemCollectionPrefix : "") + toTypeName(collection)}${
-          collection.singleton || collection.system ? "" : "[]"
-        }`,
-      })),
+      nonEmptyCollections.map((collection) => {
+        const hasCustomFields = Object.keys(collection.fields).length > 0;
+        const usesDefaultSystemType = collection.system && !hasCustomFields;
+        return {
+          name: collection.name,
+          type: `${
+            (collection.system && !usesDefaultSystemType ? systemCollectionPrefix : "") +
+            toTypeName(collection)
+          }${collection.singleton || collection.system ? "" : "[]"}`,
+        };
+      }),
       { typeStyle }
     );
   }
@@ -326,6 +326,27 @@ export function compileTypes(schema: ResolvedSchema, opts: CompileTypesOptions =
       return name;
     }
   }
+}
+
+function collectReferencedSystemCollections(schema: ResolvedSchema): Set<SystemCollectionName> {
+  const systemCollections = new Set<SystemCollectionName>();
+
+  for (const collectionName in schema) {
+    for (const fieldName in schema[collectionName]!.fields) {
+      const field = schema[collectionName]!.fields[fieldName]!;
+      if (
+        (field.kind === "primitive" || field.kind === "alias") &&
+        (field.relation?.kind === "m2o" || field.relation?.kind === "o2m")
+      ) {
+        const relatedCollection = field.relation.relatedCollection;
+        if (relatedCollection in collectionToType && schema[relatedCollection]?.system) {
+          systemCollections.add(relatedCollection as SystemCollectionName);
+        }
+      }
+    }
+  }
+
+  return systemCollections;
 }
 
 function sanitizeTypeName(name: string) {

@@ -42,3 +42,8 @@ test("generates system collection types", async () => {
   const schema = await import("./snapshots/system.input.json");
   await expect(generateTypes(schema)).toMatchFileSnapshot("./snapshots/system.output.ts");
 });
+
+test("includes referenced system collections without custom fields", async () => {
+  const schema = await import("./snapshots/system_reference.input.json");
+  await expect(generateTypes(schema)).toMatchFileSnapshot("./snapshots/system_reference.output.ts");
+});
