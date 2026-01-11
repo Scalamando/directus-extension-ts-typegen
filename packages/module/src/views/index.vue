@@ -119,12 +119,15 @@ const types = computed(() =>
         <v-checkbox v-model="requiredNotNullable" id="required-not-nullable" block>
           Treat required fields as non-nullable
         </v-checkbox>
+        <small class="type-note">Omit <code>null</code> from required field types.</small>
 
         <label for="type-prefix">Type Prefix</label>
         <v-input v-model="typePrefix" id="type-prefix" placeholder="Enter a type prefix..." trim />
+        <small class="type-note">Prepends text to every generated type name.</small>
 
         <label for="type-suffix">Type Suffix</label>
         <v-input v-model="typeSuffix" id="type-suffix" placeholder="Enter a type suffix..." trim />
+        <small class="type-note">Appends text to every generated type name.</small>
 
         <label for="type-style">Type Style</label>
         <v-select
@@ -135,6 +138,9 @@ const types = computed(() =>
             { text: 'Type', value: 'type' },
           ]"
         />
+        <small class="type-note"
+          >Choose whether to emit <code>interface</code> or <code>type</code> declarations.</small
+        >
       </div>
 
       <Suspense>
@@ -185,7 +191,8 @@ const types = computed(() =>
   --v-button-color-disabled: var(--theme--foreground);
 }
 
-.version, .version :deep(.v-icon) {
+.version,
+.version :deep(.v-icon) {
   color: var(--theme--foreground-subdued);
   transition: color var(--fast) var(--transition);
 
@@ -219,14 +226,28 @@ const types = computed(() =>
     label {
       font-size: 16px;
       line-height: 19px;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
       cursor: pointer;
       color: var(--theme--form--field--label--foreground);
     }
 
-    .v-input,
-    .v-checkbox {
-      margin-bottom: 16px;
+    .type-note {
+      color: var(--theme--foreground-subdued);
+      font-weight: var(--theme--fonts--sans--font-weight);
+      font-size: 13px;
+      font-family: var(--theme--fonts--sans--font-family);
+      font-style: italic;
+      line-height: 18px;
+      display: block;
+      margin: -2px 0 32px;
+    }
+
+    .type-note code {
+      font-family: var(--theme--fonts--monospace--font-family);
+      font-size: 12px;
+      background: var(--theme--background-subdued);
+      padding: 0 4px;
+      border-radius: var(--theme--border-radius);
     }
   }
 
