@@ -80,6 +80,8 @@ yargs(hideBin(process.argv))
         logger.debug("directus-token:", token.length > 0 ? "<hidden>" : "<empty>");
         logger.debug("directus-output:", output);
 
+        // Get host url and check that it's reachable
+
         if (host == "") {
           host = await input({
             message: "Please enter the url of your directus instance:",
@@ -104,6 +106,8 @@ yargs(hideBin(process.argv))
             },
           });
         }
+
+        // Collect auth info
 
         let tokenOrPasswordAuth: null | "password" | "token" =
           password != "" ? "password" : token != "" ? "token" : null;
@@ -147,6 +151,8 @@ yargs(hideBin(process.argv))
         logger.debug("required-not-nullable:", requiredNotNullable);
         logger.debug("type-prefix", typePrefix);
 
+        // Authenticate with the directus instance
+
         let bearerToken: string;
         if (tokenOrPasswordAuth == "password") {
           try {
@@ -173,6 +179,8 @@ yargs(hideBin(process.argv))
           bearerToken = token;
         }
 
+        // Fetch collections, fields and relations for type generation
+
         const collectionUrl = url.resolve(host, "/collections");
         logger.debug(`Fetching collections at '${collectionUrl}'.`);
         const collections = await fetchDirectus<DirectusCollection[]>(collectionUrl, bearerToken);
@@ -188,6 +196,8 @@ yargs(hideBin(process.argv))
         const relations = await fetchDirectus<DirectusRelation[]>(relationsUrl, bearerToken);
         logger.debug(`Retrieved ${relations.length} relations.`);
 
+        // Finally, generate the types
+
         logger.debug(`Generating types...`);
         const types = generateTypes(
           { collections, fields, relations },
@@ -198,11 +208,15 @@ yargs(hideBin(process.argv))
         );
         logger.debug(`Finished type generation.`);
 
+        // If no output path was given, write to stdout
+
         if (output == "") {
           logger.debug(`directus-output is empty, sending types to stdout.`);
           process.stdout.write(types + "\n");
           return;
         }
+
+        // Else, write to the output file, asking for confirmation if the file exists
 
         const resolvedPath = path.isAbsolute(output) ? output : path.resolve(process.cwd(), output);
         logger.debug(`Resolved output path: ${resolvedPath}`);
