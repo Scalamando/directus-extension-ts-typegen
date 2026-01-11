@@ -1,5 +1,17 @@
 # directus-ts-typegen
 
+## 0.6.0
+
+### Minor Changes
+
+- 897e188: Sanitize types names more thoroughly, replacing all characters that can't be used in typescript type names with "\_".
+
+### Patch Changes
+
+- 1f0bfd1: Add a type style option to choose between interface and type declarations.
+- b707f0e: Add type generation options to cli (--required-not-null, --type-prefix "prefix").
+- 63d5126: Adds the option to define a type suffix that's appended to the type name.
+
 ## 0.5.0
 
 ### Minor Changes
