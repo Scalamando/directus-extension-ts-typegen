@@ -264,12 +264,15 @@ function resolveStructuredType(
         type: listField.type,
         required: listField.meta.required ?? false,
       });
-      const resolveChildren = (listField: DirectusFieldListField): ListField => ({
+    const resolveChildren = (listField: DirectusFieldListField): ListField => {
+      const childField = listFieldToField(listField);
+      return {
         name: listField.name,
-        type: ["json", "csv"].includes(listField.type)
-          ? resolveStructuredType(listFieldToField(listField), { requiredNotNullable })
+        type: isStructured(childField)
+          ? resolveStructuredType(childField, { requiredNotNullable })
           : listField.type,
-      });
+      };
+    };
       return {
         kind: "structured",
         name: field.name,
