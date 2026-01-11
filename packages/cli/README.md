@@ -58,6 +58,7 @@ npx directus-ts-typegen [options]
 - **`--directus-output`**: Location of the file the types will be written to. If not set, types output to stdout
 - **`--required-not-nullable`**: Treat required fields as non-nullable (omit `null` from their types)
 - **`--type-prefix`**: Prefix to prepend to generated type names
+- **`--type-suffix`**: Suffix to append to generated type names
 
 These options can also be set using environment variables:
 
