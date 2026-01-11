@@ -30,7 +30,7 @@ npx directus-ts-typegen \
   --directus-host https://your-directus.com \
   --directus-email admin@example.com \
   --directus-password yourpassword \
-  --directus-output ./types/directus.ts
+  --output ./types/directus.ts
 ```
 
 The CLI also supports static tokens for CI via `--directus-token` and the

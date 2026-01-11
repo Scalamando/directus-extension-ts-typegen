@@ -55,7 +55,7 @@ npx directus-ts-typegen [options]
 - **`--directus-email`**: Email address of your directus admin user
 - **`--directus-password`**: Password of your directus admin user
 - **`--directus-token`**: Static token of your directus admin user
-- **`--directus-output`**: Location of the file the types will be written to. If not set, types output to stdout
+- **`--output`**: Location of the file the types will be written to. If not set, types output to stdout
 - **`--required-not-nullable`**: Treat required fields as non-nullable (omit `null` from their types)
 - **`--type-prefix`**: Prefix to prepend to generated type names
 - **`--type-suffix`**: Suffix to append to generated type names
