@@ -183,17 +183,17 @@ yargs(hideBin(process.argv))
 
         const collectionUrl = url.resolve(host, "/collections");
         logger.debug(`Fetching collections at '${collectionUrl}'.`);
-        const collections = await fetchDirectus<DirectusCollection[]>(collectionUrl, bearerToken);
+        const collections = await fetchDirectus<DirectusCollection>(collectionUrl, bearerToken);
         logger.debug(`Retrieved ${collections.length} collections.`);
 
         const fieldsUrl = url.resolve(host, "/fields");
         logger.debug(`Fetching fields at '${fieldsUrl}'.`);
-        const fields = await fetchDirectus<DirectusField[]>(fieldsUrl, bearerToken);
+        const fields = await fetchDirectus<DirectusField>(fieldsUrl, bearerToken);
         logger.debug(`Retrieved ${fields.length} fields.`);
 
         const relationsUrl = url.resolve(host, "/relations");
         logger.debug(`Fetching relations at '${relationsUrl}'.`);
-        const relations = await fetchDirectus<DirectusRelation[]>(relationsUrl, bearerToken);
+        const relations = await fetchDirectus<DirectusRelation>(relationsUrl, bearerToken);
         logger.debug(`Retrieved ${relations.length} relations.`);
 
         // Finally, generate the types
