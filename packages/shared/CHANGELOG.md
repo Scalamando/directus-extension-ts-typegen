@@ -1,5 +1,11 @@
 # @directus-ts-typegen/shared
 
+## 0.7.0
+
+### Minor Changes
+
+- b22639a: Add a configurable option to include referenced system collection types in generated schemas for the Directus SDK workaround.
+
 ## 0.6.0
 
 ### Minor Changes
