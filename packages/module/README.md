@@ -36,6 +36,11 @@ Add the extension to your Directus Dockerfile. For detailed installation instruc
 
 The generated types will reflect your current Directus schema and can be used with the Directus SDK for full type safety in your applications.
 
+## Options
+
+- **Required Not Nullable**: Treat required fields as non-nullable (omit `null` from their types)
+- **Type Prefix**: Prefix to prepend to generated type names
+
 ## Credits
 
 - **[directus-extension-generate-types](https://github.com/maltejur/directus-extension-generate-types)** - Initial inspiration for this project

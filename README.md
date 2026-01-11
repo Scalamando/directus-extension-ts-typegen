@@ -37,6 +37,9 @@ The CLI also supports static tokens for CI via `--directus-token` and the
 matching `DIRECTUS_TS_TYPEGEN_*` environment variables. See the
 [package readme](/packages/cli/README.md) for the full option list.
 
+Further options affecting the type generation are available
+in both the CLI and the module UI. See the CLI and module readmes for details.
+
 ## Packages
 
 - [directus-extension-ts-typegen](./packages/module/) - Directus module extension to generate the types via gui
