@@ -45,6 +45,16 @@ yargs(hideBin(process.argv))
     description:
       "Location of the file the types will be written to. If this isn't set, the types will be output to stdout",
   })
+  .option("required-not-nullable", {
+    type: "boolean",
+    description: "If true, required fields will omit 'null' from their types",
+    default: false,
+  })
+  .option("type-prefix", {
+    type: "string",
+    description: "Prefix that's prepended to the generated types names",
+    default: "",
+  })
   .command(
     ["$0", "generate"],
     "generate the types",
@@ -59,6 +69,9 @@ yargs(hideBin(process.argv))
         let password = argv.directusPassword ?? process.env.DIRECTUS_TS_TYPEGEN_PASSWORD ?? "";
         let token = argv.directusToken ?? process.env.DIRECTUS_TS_TYPEGEN_TOKEN ?? "";
         let output = argv.output ?? process.env.DIRECTUS_TS_TYPEGEN_OUTPUT ?? "";
+
+        let requiredNotNullable = argv.requiredNotNullable;
+        let typePrefix = argv.typePrefix;
 
         logger.debug("Configuration values at startup:");
         logger.debug("directus-host:", host);
@@ -130,6 +143,9 @@ yargs(hideBin(process.argv))
         logger.debug("directus-password:", password.length > 0 ? "<hidden>" : "<empty>");
         logger.debug("directus-token:", token.length > 0 ? "<hidden>" : "<empty>");
         logger.debug("directus-output:", output);
+        logger.debug("Type generation options:");
+        logger.debug("required-not-nullable:", requiredNotNullable);
+        logger.debug("type-prefix", typePrefix);
 
         let bearerToken: string;
         if (tokenOrPasswordAuth == "password") {
@@ -176,8 +192,8 @@ yargs(hideBin(process.argv))
         const types = generateTypes(
           { collections, fields, relations },
           {
-            typePrefix: "",
-            requiredNotNullable: false,
+            typePrefix,
+            requiredNotNullable,
           }
         );
         logger.debug(`Finished type generation.`);
