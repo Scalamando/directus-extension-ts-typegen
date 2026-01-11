@@ -1,5 +1,20 @@
 # directus-extension-ts-typegen
 
+## 0.6.0
+
+### Minor Changes
+
+- 897e188: Sanitize types names more thoroughly, replacing all characters that can't be used in typescript type names with "\_".
+
+### Patch Changes
+
+- 1f0bfd1: Add a type style option to choose between interface and type declarations.
+- 63d5126: Adds the option to define a type suffix that's appended to the type name.
+- 0a541e3: Add helper notes under type generation options in the module UI.
+- 0a57bc3: Add support for small screens.
+- 1df7634: Fix unreachable overflow at the bottom of the code block.
+- 7190320: Add navigation links to docs, changelog, issues, and show the module version in the sidebar.
+
 ## 0.5.0
 
 ### Minor Changes
