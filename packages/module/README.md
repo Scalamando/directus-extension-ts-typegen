@@ -41,6 +41,7 @@ The generated types will reflect your current Directus schema and can be used wi
 - **Required Not Nullable**: Treat required fields as non-nullable (omit `null` from their types)
 - **Type Prefix**: Prefix to prepend to generated type names
 - **Type Suffix**: Suffix to append to generated type names
+- **Type Style**: Output style for type declarations (`interface` or `type`, default: `interface`)
 
 ## Credits
 
