@@ -11,6 +11,7 @@ export interface GenerateTypesInput {
 export interface GenerateTypesOptions {
   typePrefix?: string;
   typeSuffix?: string;
+  typeStyle?: "interface" | "type";
   requiredNotNullable?: boolean;
 }
 
@@ -20,6 +21,7 @@ export function generateTypes(directusSchema: GenerateTypesInput, opts?: Generat
   const typeString = compileTypes(resolvedTypes, {
     typePrefix: opts?.typePrefix,
     typeSuffix: opts?.typeSuffix,
+    typeStyle: opts?.typeStyle,
   });
   return typeString;
 }

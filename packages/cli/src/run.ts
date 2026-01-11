@@ -50,6 +50,12 @@ yargs(hideBin(process.argv))
     description: "If true, required fields will omit 'null' from their types",
     default: false,
   })
+  .option("type-style", {
+    type: "string",
+    choices: ["interface", "type"],
+    description: "Whether to emit `export interface` or `export type` declarations",
+    default: "interface",
+  })
   .option("type-prefix", {
     type: "string",
     description: "Prefix that's prepended to the generated types names",
@@ -76,6 +82,7 @@ yargs(hideBin(process.argv))
         let output = argv.output ?? process.env.DIRECTUS_TS_TYPEGEN_OUTPUT ?? "";
 
         let requiredNotNullable = argv.requiredNotNullable;
+        let typeStyle = argv.typeStyle as "interface" | "type";
         let typePrefix = argv.typePrefix;
         let typeSuffix = argv.typeSuffix;
 
@@ -155,6 +162,7 @@ yargs(hideBin(process.argv))
         logger.debug("directus-output:", output);
         logger.debug("Type generation options:");
         logger.debug("required-not-nullable:", requiredNotNullable);
+        logger.debug("type-style", typeStyle);
         logger.debug("type-prefix", typePrefix);
         logger.debug("type-suffix", typeSuffix);
 
@@ -211,6 +219,7 @@ yargs(hideBin(process.argv))
           {
             typePrefix,
             typeSuffix,
+            typeStyle,
             requiredNotNullable,
           }
         );

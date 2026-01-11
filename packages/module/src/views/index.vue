@@ -14,6 +14,7 @@ const api = useApi();
 
 const typePrefix = ref("");
 const typeSuffix = ref("");
+const typeStyle = ref<"interface" | "type">("interface");
 const requiredNotNullable = ref(false);
 
 const { state: collections, isLoading: isLoadingCollections } = useAsyncState(
@@ -40,6 +41,7 @@ const types = computed(() =>
         {
           typePrefix: typePrefix.value,
           typeSuffix: typeSuffix.value,
+          typeStyle: typeStyle.value,
           requiredNotNullable: requiredNotNullable.value,
         }
       )
@@ -68,6 +70,16 @@ const types = computed(() =>
 
         <label for="type-suffix">Type Suffix</label>
         <v-input v-model="typeSuffix" id="type-suffix" placeholder="Enter a type suffix..." trim />
+
+        <label for="type-style">Type Style</label>
+        <v-select
+          v-model="typeStyle"
+          id="type-style"
+          :items="[
+            { text: 'Interface', value: 'interface' },
+            { text: 'Type', value: 'type' },
+          ]"
+        />
       </div>
 
       <Suspense>
