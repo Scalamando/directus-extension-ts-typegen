@@ -9,8 +9,11 @@ import { useApi } from "@directus/extensions-sdk";
 import { useAsyncState } from "@vueuse/core";
 import { computed, ref } from "vue";
 import CodeHighlighter from "../components/CodeHighlighter.vue";
+import modulePackage from "../../package.json";
 
 const api = useApi();
+
+const moduleVersion = modulePackage.version;
 
 const typePrefix = ref("");
 const typeSuffix = ref("");
@@ -54,6 +57,58 @@ const types = computed(() =>
       <v-button icon rounded disabled class="header-icon">
         <v-icon name="code" />
       </v-button>
+    </template>
+
+    <template #navigation>
+      <v-list nav>
+        <v-list-item to="" active>
+          <v-list-item-icon><v-icon name="code" /></v-list-item-icon>
+          <v-list-item-content>
+            <v-text-overflow text="Type Generation"> </v-text-overflow>
+          </v-list-item-content>
+        </v-list-item>
+        <v-divider />
+        <v-list-item
+          href="https://github.com/Scalamando/directus-extension-ts-typegen/tree/main"
+          target="_blank"
+          rel="noopener"
+        >
+          <v-list-item-icon><v-icon name="book" /></v-list-item-icon>
+          <v-list-item-content>
+            <v-text-overflow text="Docs"> </v-text-overflow>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          href="https://github.com/Scalamando/directus-extension-ts-typegen/releases"
+          target="_blank"
+          rel="noopener"
+        >
+          <v-list-item-icon><v-icon name="history" /></v-list-item-icon>
+          <v-list-item-content>
+            <v-text-overflow text="Changelog"> </v-text-overflow>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          href="https://github.com/Scalamando/directus-extension-ts-typegen/issues"
+          target="_blank"
+          rel="noopener"
+        >
+          <v-list-item-icon><v-icon name="help" /></v-list-item-icon>
+          <v-list-item-content>
+            <v-text-overflow text="Issues & Support"> </v-text-overflow>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          :href="`https://github.com/Scalamando/directus-extension-ts-typegen/releases/tag/directus-ts-typegen@${moduleVersion}`"
+          target="_blank"
+          rel="noopener"
+          class="version"
+        >
+          <v-list-item-content>
+            <v-text-overflow :text="`directus-ts-typegen ${moduleVersion}`"></v-text-overflow>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
     </template>
 
     <div class="page">
@@ -128,6 +183,15 @@ const types = computed(() =>
 <style scoped>
 .header-icon {
   --v-button-color-disabled: var(--theme--foreground);
+}
+
+.version, .version :deep(.v-icon) {
+  color: var(--theme--foreground-subdued);
+  transition: color var(--fast) var(--transition);
+
+  :hover {
+    color: var(--theme--foreground-accent);
+  }
 }
 
 .page {
