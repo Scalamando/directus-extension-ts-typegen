@@ -32,8 +32,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
-          registry-url: 'https://registry.npmjs.org/'
-          cache: 'pnpm'
+          registry-url: "https://registry.npmjs.org/"
+          cache: "pnpm"
 
       - name: Update npm for trusted publishing
         run: npm install -g npm@'>=11.5.1'
@@ -46,11 +46,11 @@ jobs:
         uses: changesets/action@e0145edc7d9d8679003495b11f87bd8ef63c0cba # v1.5.3
         with:
           publish: pnpm ci:publish
-          commit: '[ci] release'
-          title: '[ci] release'
+          commit: "[ci] release"
+          title: "[ci] release"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ''
+          NPM_TOKEN: ""
 
       - name: Push Git Tag after Publish
         if: steps.changesets.outputs.published == 'true'

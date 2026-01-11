@@ -85,13 +85,11 @@ export interface PrepareSchemaInput {
   relations: Array<DirectusRelation>;
 }
 
-export function prepareSchema(
-  { collections, fields, relations }: PrepareSchemaInput
-): Schema {
+export function prepareSchema({ collections, fields, relations }: PrepareSchemaInput): Schema {
   let schema: Schema = {};
 
   for (const collection of collections) {
-    if(collection.schema == null) continue; // Skip folders
+    if (collection.schema == null) continue; // Skip folders
 
     schema[collection.collection] = {
       name: collection.collection,

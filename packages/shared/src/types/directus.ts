@@ -21,18 +21,20 @@ export interface DirectusField {
     foreign_key_table: string | null;
     foreign_key_column: string | null;
   } | null;
-  meta: {
-    required: boolean;
-    system?: boolean;
-  } & (
-    | DirectusFieldMeta
-    | DirectusFieldListMeta
-    | DirectusFieldMultipleCheckboxMeta
-    | DirectusFieldTreeMeta
-    | DirectusFieldDropdownMeta
-    | DirectusFieldMultipleDropdownMeta
-    | DirectusFieldTagsMeta
-  ) | null;
+  meta:
+    | ({
+        required: boolean;
+        system?: boolean;
+      } & (
+        | DirectusFieldMeta
+        | DirectusFieldListMeta
+        | DirectusFieldMultipleCheckboxMeta
+        | DirectusFieldTreeMeta
+        | DirectusFieldDropdownMeta
+        | DirectusFieldMultipleDropdownMeta
+        | DirectusFieldTagsMeta
+      ))
+    | null;
 }
 
 export interface DirectusFieldMeta {

@@ -8,7 +8,9 @@ test("generates collection types", async () => {
 
 test("generates collection types with prefix", async () => {
   const schema = await import("./snapshots/prefix.input.json");
-  await expect(generateTypes(schema, {typePrefix: "Test"})).toMatchFileSnapshot("./snapshots/prefix.output.ts");
+  await expect(generateTypes(schema, { typePrefix: "Test" })).toMatchFileSnapshot(
+    "./snapshots/prefix.output.ts"
+  );
 });
 
 test("generates singleton collection types", async () => {

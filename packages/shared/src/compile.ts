@@ -162,7 +162,7 @@ export function compileTypes(schema: ResolvedSchema, opts: CompileTypesOptions =
       case "time":
       case "dateTime":
       case "timestamp":
-        return "\"datetime\"";
+        return '"datetime"';
       case "integer":
       case "bigInteger":
       case "float":
